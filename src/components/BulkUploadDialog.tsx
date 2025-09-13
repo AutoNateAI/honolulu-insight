@@ -57,7 +57,7 @@ interface Event {
   name: string;
   description: string;
   event_type: string;
-  company_id: string;
+  company_id: string | null;
   organizer_name: string;
   organizer_email: string;
   event_date: string;
@@ -115,7 +115,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
     name: '',
     description: '',
     event_type: 'company',
-    company_id: '',
+    company_id: null,
     organizer_name: '',
     organizer_email: '',
     event_date: '',
@@ -213,7 +213,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
       name: '',
       description: '',
       event_type: 'company',
-      company_id: '',
+      company_id: null,
       organizer_name: '',
       organizer_email: '',
       event_date: '',
@@ -592,7 +592,13 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                   </div>
                   <div>
                     <Label className="text-gray-300">Event Type</Label>
-                    <Select value={event.event_type} onValueChange={(value) => updateEventData(index, 'event_type', value)}>
+                     <Select value={event.event_type} onValueChange={(value) => {
+                       updateEventData(index, 'event_type', value);
+                       // Reset company_id when switching to HTW event
+                       if (value === 'htw') {
+                         updateEventData(index, 'company_id', null);
+                       }
+                     }}>
                       <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
@@ -602,6 +608,23 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       </SelectContent>
                     </Select>
                   </div>
+                  {event.event_type === 'company' && (
+                    <div>
+                      <Label className="text-gray-300">Company</Label>
+                      <Select value={event.company_id || ''} onValueChange={(value) => updateEventData(index, 'company_id', value || null)}>
+                        <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                          <SelectValue placeholder="Select company" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-600">
+                          {companies.map(company => (
+                            <SelectItem key={company.id} value={company.id} className="text-white hover:bg-gray-700">
+                              {company.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   <div>
                     <Label className="text-gray-300">Organizer Name</Label>
                     <Input
