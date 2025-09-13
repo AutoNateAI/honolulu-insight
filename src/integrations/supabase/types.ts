@@ -17,6 +17,7 @@ export type Database = {
       companies: {
         Row: {
           company_size: string | null
+          coordinates: Json | null
           created_at: string
           employee_count: number | null
           engagement_level: string | null
@@ -31,6 +32,7 @@ export type Database = {
         }
         Insert: {
           company_size?: string | null
+          coordinates?: Json | null
           created_at?: string
           employee_count?: number | null
           engagement_level?: string | null
@@ -45,6 +47,7 @@ export type Database = {
         }
         Update: {
           company_size?: string | null
+          coordinates?: Json | null
           created_at?: string
           employee_count?: number | null
           engagement_level?: string | null
@@ -413,7 +416,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_company_coordinates: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

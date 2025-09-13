@@ -85,7 +85,7 @@ export default function Geographic() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 backdrop-blur-xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -98,7 +98,7 @@ export default function Geographic() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 backdrop-blur-xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -111,7 +111,7 @@ export default function Geographic() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20">
+        <Card className="glass-card border-white/20 backdrop-blur-xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -126,7 +126,7 @@ export default function Geographic() {
       </div>
 
       {/* Interactive Map */}
-      <Card className="glass-card border-white/20">
+      <Card className="glass-card border-white/20 backdrop-blur-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5" />
@@ -163,7 +163,7 @@ export default function Geographic() {
           islandData.map((island, index) => (
             <Card 
               key={island.id} 
-              className={`glass-card border-white/20 hover:scale-105 transition-all duration-200 cursor-pointer group ${
+              className={`glass-card border-white/20 backdrop-blur-xl hover:scale-105 transition-all duration-200 cursor-pointer group ${
                 index === 0 ? 'md:col-span-2 lg:col-span-1' : ''
               }`}
             >
@@ -241,7 +241,7 @@ export default function Geographic() {
       </div>
 
       {/* Insights Card */}
-      <Card className="glass-card border-white/20">
+      <Card className="glass-card border-white/20 backdrop-blur-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />

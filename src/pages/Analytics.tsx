@@ -159,70 +159,70 @@ export default function Analytics() {
 
       {analytics && (
         <>
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="glass-card border-white/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total Members</p>
-                    <p className="text-2xl font-bold">{analytics.totalMembers.toLocaleString()}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {renderGrowthIcon(analytics.memberGrowth, `h-3 w-3 ${getGrowthColor(analytics.memberGrowth)}`)}
-                      <span className={`text-xs ${getGrowthColor(analytics.memberGrowth)}`}>
-                        {analytics.memberGrowth > 0 ? '+' : ''}{analytics.memberGrowth.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                  <Users className="h-8 w-8 text-ocean-primary" />
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="glass-card border-white/20 backdrop-blur-xl">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Members</p>
+                <p className="text-2xl font-bold">{analytics.totalMembers.toLocaleString()}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  {renderGrowthIcon(analytics.memberGrowth, `h-3 w-3 ${getGrowthColor(analytics.memberGrowth)}`)}
+                  <span className={`text-xs ${getGrowthColor(analytics.memberGrowth)}`}>
+                    {analytics.memberGrowth > 0 ? '+' : ''}{analytics.memberGrowth.toFixed(1)}%
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              <Users className="h-8 w-8 text-ocean-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="glass-card border-white/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Companies</p>
-                    <p className="text-2xl font-bold">{analytics.totalCompanies.toLocaleString()}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {renderGrowthIcon(analytics.companyGrowth, `h-3 w-3 ${getGrowthColor(analytics.companyGrowth)}`)}
-                      <span className={`text-xs ${getGrowthColor(analytics.companyGrowth)}`}>
-                        {analytics.companyGrowth > 0 ? '+' : ''}{analytics.companyGrowth.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                  <Building className="h-8 w-8 text-sunset-primary" />
+        <Card className="glass-card border-white/20 backdrop-blur-xl">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Companies</p>
+                <p className="text-2xl font-bold">{analytics.totalCompanies.toLocaleString()}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  {renderGrowthIcon(analytics.companyGrowth, `h-3 w-3 ${getGrowthColor(analytics.companyGrowth)}`)}
+                  <span className={`text-xs ${getGrowthColor(analytics.companyGrowth)}`}>
+                    {analytics.companyGrowth > 0 ? '+' : ''}{analytics.companyGrowth.toFixed(1)}%
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              <Building className="h-8 w-8 text-sunset-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="glass-card border-white/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Industries</p>
-                    <p className="text-2xl font-bold">{analytics.totalIndustries}</p>
-                    <p className="text-xs text-muted-foreground mt-1">Active sectors</p>
-                  </div>
-                  <Target className="h-8 w-8 text-tropical-primary" />
-                </div>
-              </CardContent>
-            </Card>
+        <Card className="glass-card border-white/20 backdrop-blur-xl">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Industries</p>
+                <p className="text-2xl font-bold">{analytics.totalIndustries}</p>
+                <p className="text-xs text-muted-foreground mt-1">Active sectors</p>
+              </div>
+              <Target className="h-8 w-8 text-tropical-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="glass-card border-white/20">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Avg Growth</p>
-                    <p className="text-2xl font-bold">{analytics.memberGrowth.toFixed(1)}%</p>
-                    <p className="text-xs text-muted-foreground mt-1">This quarter</p>
-                  </div>
-                  <TrendingUp className="h-8 w-8 text-plumeria-primary" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        <Card className="glass-card border-white/20 backdrop-blur-xl">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Avg Growth</p>
+                <p className="text-2xl font-bold">{analytics.memberGrowth.toFixed(1)}%</p>
+                <p className="text-xs text-muted-foreground mt-1">This quarter</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-plumeria-primary" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
           {/* Charts and Analytics */}
           <Tabs defaultValue="industries" className="space-y-6">
@@ -244,7 +244,7 @@ export default function Analytics() {
             <TabsContent value="industries" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Industry Distribution */}
-                <Card className="glass-card border-white/20">
+                <Card className="glass-card border-white/20 backdrop-blur-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <PieChart className="h-5 w-5" />
@@ -291,7 +291,7 @@ export default function Analytics() {
                 </Card>
 
                 {/* Growth Rates */}
-                <Card className="glass-card border-white/20">
+                <Card className="glass-card border-white/20 backdrop-blur-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
@@ -328,7 +328,7 @@ export default function Analytics() {
             </TabsContent>
 
             <TabsContent value="geography" className="space-y-6">
-              <Card className="glass-card border-white/20">
+              <Card className="glass-card border-white/20 backdrop-blur-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BarChart3 className="h-5 w-5" />
@@ -360,7 +360,7 @@ export default function Analytics() {
             </TabsContent>
 
             <TabsContent value="trends" className="space-y-6">
-              <Card className="glass-card border-white/20">
+              <Card className="glass-card border-white/20 backdrop-blur-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <LineChart className="h-5 w-5" />

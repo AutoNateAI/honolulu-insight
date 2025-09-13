@@ -73,11 +73,11 @@ const Map: React.FC<MapProps> = ({ className = "" }) => {
     try {
       const { data, error } = await supabase.functions.invoke('get-mapbox-token');
       if (error) throw error;
-      setMapboxToken(data.token);
+      setMapboxToken(data?.token);
     } catch (error) {
       console.error('Error fetching Mapbox token:', error);
-      // Fallback - ask user to add token manually
-      setMapboxToken('pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbGE4aXc4NWMwMHhuMzNxdWVkMm5leG5oIn0.xxx');
+      // For development - you'll need to add your Mapbox token to Supabase secrets
+      console.log('Please add your Mapbox public token to Supabase Edge Function secrets as MAPBOX_PUBLIC_TOKEN');
     }
   };
 
@@ -126,21 +126,14 @@ const Map: React.FC<MapProps> = ({ className = "" }) => {
 
       if (error) throw error;
 
-      const companiesWithCoords = await Promise.all(
-        (companiesData || []).map(async (company) => {
-          let coordinates = null;
-          
-          // Try to get existing coordinates
-          if (company.location && !coordinates) {
-            coordinates = await geocodeLocation(company.location, company.island);
-          }
-
-          return {
-            ...company,
-            coordinates
-          };
-        })
-      );
+      const companiesWithCoords = (companiesData || []).map(company => ({
+        ...company,
+        coordinates: company.coordinates && typeof company.coordinates === 'object' && 
+                    'lat' in company.coordinates && 'lng' in company.coordinates ? {
+          lat: Number((company.coordinates as any).lat),
+          lng: Number((company.coordinates as any).lng)
+        } : null
+      }));
 
       setCompanies(companiesWithCoords);
       addCompanyMarkers(companiesWithCoords);
