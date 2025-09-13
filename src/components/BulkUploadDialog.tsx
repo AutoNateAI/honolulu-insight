@@ -593,13 +593,13 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                   <div>
                     <Label className="text-gray-300">Event Type</Label>
                      <Select 
-                       key={`event-type-${index}-${event.event_type}`}
+                       key={`event-type-${index}`}
                        value={event.event_type} 
                        onValueChange={(value) => {
                          updateEventData(index, 'event_type', value);
                          // Reset company_id when switching to HTW event
                          if (value === 'htw') {
-                           setTimeout(() => updateEventData(index, 'company_id', null), 0);
+                           updateEventData(index, 'company_id', null);
                          }
                        }}
                      >
