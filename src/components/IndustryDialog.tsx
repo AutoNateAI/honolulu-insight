@@ -229,14 +229,14 @@ export function IndustryDialog({
             <div className="space-y-2">
               <Label htmlFor="members" className="text-white font-semibold">Members</Label>
               <div className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white/70">
-                {formData.member_count.toLocaleString()} (auto-calculated)
+                {formData.member_count.toLocaleString()}
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="companies" className="text-white font-semibold">Companies</Label>
               <div className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white/70">
-                {formData.company_count.toLocaleString()} (auto-calculated)
+                {formData.company_count.toLocaleString()}
               </div>
             </div>
 
