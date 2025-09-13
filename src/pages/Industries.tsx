@@ -66,26 +66,14 @@ export default function Industries() {
 
   const fetchIndustries = async () => {
     try {
-      // Fetch industries with calculated member and company counts
+      // Fetch industries with updated counts from database
       const { data, error } = await supabase
         .from('industries')
-        .select(`
-          *,
-          companies:companies(count),
-          members:members(count)
-        `)
+        .select('*')
         .order('member_count', { ascending: false });
 
       if (error) throw error;
-
-      // Process the data to include calculated counts
-      const industriesWithCounts = (data || []).map(industry => ({
-        ...industry,
-        member_count: industry.members?.[0]?.count || 0,
-        company_count: industry.companies?.[0]?.count || 0,
-      }));
-
-      setIndustries(industriesWithCounts);
+      setIndustries(data || []);
     } catch (error) {
       console.error('Error fetching industries:', error);
     } finally {
