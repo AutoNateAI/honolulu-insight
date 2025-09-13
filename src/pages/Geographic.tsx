@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Users, Building, TrendingUp, BarChart3 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import Map from '@/components/Map';
 
 interface IslandData {
   id: string;
@@ -124,7 +125,7 @@ export default function Geographic() {
         </Card>
       </div>
 
-      {/* Interactive Map Placeholder */}
+      {/* Interactive Map */}
       <Card className="glass-card border-white/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -132,24 +133,11 @@ export default function Geographic() {
             Hawaiian Islands Network Map
           </CardTitle>
           <CardDescription>
-            Interactive map showing HTW member and company distribution
+            Interactive map showing HTW member and company distribution. Click company pins to view details.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="relative h-96 bg-gradient-to-br from-ocean-primary/20 via-tropical-primary/20 to-sunset-primary/20 rounded-lg flex items-center justify-center">
-            <div className="text-center space-y-4">
-              <div className="text-6xl">🗺️</div>
-              <div>
-                <p className="text-lg font-semibold">Interactive Map Coming Soon</p>
-                <p className="text-sm text-muted-foreground">
-                  Mapbox integration with Hawaiian islands visualization
-                </p>
-              </div>
-              <Button className="bg-gradient-to-r from-ocean-primary to-sunset-primary text-white">
-                Enable Map Integration
-              </Button>
-            </div>
-          </div>
+        <CardContent className="p-0">
+          <Map className="h-96" />
         </CardContent>
       </Card>
 
