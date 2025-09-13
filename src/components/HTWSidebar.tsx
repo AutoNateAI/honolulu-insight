@@ -1,0 +1,183 @@
+import { NavLink, useLocation } from "react-router-dom";
+import { 
+  BarChart3, 
+  Building2, 
+  Map, 
+  Users, 
+  TrendingUp, 
+  Settings,
+  Home,
+  Search
+} from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+
+const navigationItems = [
+  {
+    title: "Dashboard",
+    url: "/",
+    icon: Home,
+    color: "ocean-primary"
+  },
+  {
+    title: "Industries",
+    url: "/industries",
+    icon: Building2,
+    color: "sunset-coral"
+  },
+  {
+    title: "Geographic",
+    url: "/geographic",
+    icon: Map,
+    color: "tropical-light"
+  },
+  {
+    title: "Members",
+    url: "/members",
+    icon: Users,
+    color: "plumeria-light"
+  },
+  {
+    title: "Analytics",
+    url: "/analytics",
+    icon: BarChart3,
+    color: "volcanic-light"
+  },
+  {
+    title: "Search",
+    url: "/search",
+    icon: Search,
+    color: "sunset-orange"
+  }
+];
+
+const adminItems = [
+  {
+    title: "Admin Tools",
+    url: "/admin",
+    icon: Settings,
+    color: "volcanic-medium"
+  }
+];
+
+export function HTWSidebar() {
+  const { state } = useSidebar();
+  const location = useLocation();
+  const currentPath = location.pathname;
+  
+  const isCollapsed = state === "collapsed";
+
+  const isActive = (path: string) => {
+    if (path === "/") return currentPath === "/";
+    return currentPath.startsWith(path);
+  };
+
+  const getNavClasses = (isActiveRoute: boolean, color: string) => {
+    if (isActiveRoute) {
+      return `bg-white/20 text-white shadow-lg`;
+    }
+    return `text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200`;
+  };
+
+  return (
+    <Sidebar className={`${isCollapsed ? "w-16" : "w-64"} glass-sidebar border-0`} collapsible="icon">
+      {/* Header */}
+      <div className="p-4 border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <span className="text-lg">🌺</span>
+          </div>
+          {!isCollapsed && (
+            <div>
+              <h2 className="font-poppins font-bold text-white text-lg">HTW</h2>
+              <p className="text-white/60 text-xs">Network Dashboard</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <SidebarContent className="px-2 py-4">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-white/60 text-xs font-medium uppercase tracking-wider px-3 pb-2">
+            {!isCollapsed && "Navigation"}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {navigationItems.map((item) => {
+                const isActiveRoute = isActive(item.url);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        className={getNavClasses(isActiveRoute, item.color)}
+                      >
+                        <item.icon className={`h-5 w-5 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
+                        {!isCollapsed && (
+                          <span className="font-medium">{item.title}</span>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Admin Section */}
+        <SidebarGroup className="mt-6">
+          <SidebarGroupLabel className="text-white/60 text-xs font-medium uppercase tracking-wider px-3 pb-2">
+            {!isCollapsed && "Administration"}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {adminItems.map((item) => {
+                const isActiveRoute = isActive(item.url);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        className={getNavClasses(isActiveRoute, item.color)}
+                      >
+                        <item.icon className={`h-5 w-5 ${isCollapsed ? 'mx-auto' : 'mr-3'}`} />
+                        {!isCollapsed && (
+                          <span className="font-medium">{item.title}</span>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Footer */}
+        {!isCollapsed && (
+          <div className="mt-auto p-4 border-t border-white/10">
+            <div className="text-center">
+              <p className="text-white/60 text-xs font-medium">
+                Where Tech Meets Hawaii
+              </p>
+              <p className="text-white/40 text-xs mt-1">
+                HTW Network © 2025
+              </p>
+            </div>
+          </div>
+        )}
+      </SidebarContent>
+    </Sidebar>
+  );
+}

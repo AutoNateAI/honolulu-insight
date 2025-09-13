@@ -13,15 +13,55 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'poppins': ['Poppins', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+        'roboto-mono': ['Roboto Mono', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // Hawaiian Color Palette
+        ocean: {
+          primary: "hsl(var(--ocean-primary))",
+          medium: "hsl(var(--ocean-medium))",
+          deep: "hsl(var(--ocean-deep))",
+        },
+        sunset: {
+          coral: "hsl(var(--sunset-coral))",
+          orange: "hsl(var(--sunset-orange))",
+          deep: "hsl(var(--sunset-deep))",
+        },
+        tropical: {
+          light: "hsl(var(--tropical-light))",
+          medium: "hsl(var(--tropical-medium))",
+          deep: "hsl(var(--tropical-deep))",
+        },
+        plumeria: {
+          light: "hsl(var(--plumeria-light))",
+          medium: "hsl(var(--plumeria-medium))",
+          deep: "hsl(var(--plumeria-deep))",
+        },
+        sand: {
+          light: "hsl(var(--sand-light))",
+          medium: "hsl(var(--sand-medium))",
+          dark: "hsl(var(--sand-dark))",
+        },
+        volcanic: {
+          light: "hsl(var(--volcanic-light))",
+          medium: "hsl(var(--volcanic-medium))",
+          deep: "hsl(var(--volcanic-deep))",
+        },
+        
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          light: "hsl(var(--primary-light))",
+          dark: "hsl(var(--primary-dark))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
