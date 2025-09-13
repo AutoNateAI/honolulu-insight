@@ -73,7 +73,7 @@ export default function Login() {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white/90">
+              <Label htmlFor="email" className="text-gray-900 font-semibold text-sm">
                 Email
               </Label>
               <Input
@@ -83,12 +83,12 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="glass-input bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                className="glass-input"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white/90">
+              <Label htmlFor="password" className="text-gray-900 font-semibold text-sm">
                 Password
               </Label>
               <Input
@@ -98,7 +98,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="glass-input bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                className="glass-input"
               />
             </div>
             
