@@ -599,13 +599,13 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                          updateEventData(index, 'company_id', null);
                        }
                      }}>
-                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        <SelectItem value="company" className="text-white hover:bg-gray-700">Company Event</SelectItem>
-                        <SelectItem value="htw" className="text-white hover:bg-gray-700">HTW Event</SelectItem>
-                      </SelectContent>
+                       <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                         <SelectValue placeholder="Select type" />
+                       </SelectTrigger>
+                       <SelectContent className="bg-gray-800 border-gray-600 z-50">
+                         <SelectItem value="company" className="text-white hover:bg-gray-700">Company Event</SelectItem>
+                         <SelectItem value="htw" className="text-white hover:bg-gray-700">HTW Event</SelectItem>
+                       </SelectContent>
                     </Select>
                   </div>
                   {event.event_type === 'company' && (

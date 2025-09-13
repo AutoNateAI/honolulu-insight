@@ -4,10 +4,7 @@ import {
   Building2, 
   Map, 
   Users, 
-  TrendingUp, 
-  Settings,
   Home,
-  Search,
   LogOut,
   Calendar
 } from "lucide-react";
@@ -34,6 +31,21 @@ const navigationItems = [
     color: "ocean-primary"
   },
   {
+    title: "Geographic",
+    url: "/geographic",
+    icon: Map,
+    color: "tropical-light"
+  },
+  {
+    title: "Analytics",
+    url: "/analytics",
+    icon: BarChart3,
+    color: "volcanic-light"
+  }
+];
+
+const entityItems = [
+  {
     title: "Industries",
     url: "/industries",
     icon: Building2,
@@ -46,43 +58,16 @@ const navigationItems = [
     color: "tropical-primary"
   },
   {
-    title: "Events",
-    url: "/events",
-    icon: Calendar,
-    color: "plumeria-primary"
-  },
-  {
-    title: "Geographic",
-    url: "/geographic",
-    icon: Map,
-    color: "tropical-light"
-  },
-  {
     title: "Members",
     url: "/members",
     icon: Users,
     color: "plumeria-light"
   },
   {
-    title: "Analytics",
-    url: "/analytics",
-    icon: BarChart3,
-    color: "volcanic-light"
-  },
-  {
-    title: "Search",
-    url: "/search",
-    icon: Search,
-    color: "sunset-orange"
-  }
-];
-
-const adminItems = [
-  {
-    title: "Admin Tools",
-    url: "/admin",
-    icon: Settings,
-    color: "volcanic-medium"
+    title: "Events",
+    url: "/events",
+    icon: Calendar,
+    color: "plumeria-primary"
   }
 ];
 
@@ -156,14 +141,14 @@ export function HTWSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Admin Section */}
+        {/* Entities Section */}
         <SidebarGroup className="mt-6">
           <SidebarGroupLabel className="text-white/60 text-xs font-medium uppercase tracking-wider px-3 pb-2">
-            {!isCollapsed && "Administration"}
+            {!isCollapsed && "Entities"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {adminItems.map((item) => {
+              {entityItems.map((item) => {
                 const isActiveRoute = isActive(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
