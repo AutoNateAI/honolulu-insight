@@ -599,8 +599,8 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                           name={`eventType-${index}`}
                           value="company"
                           checked={event.event_type === 'company'}
-                          onChange={(e) => {
-                            updateEventData(index, 'event_type', e.target.value);
+                          onChange={() => {
+                            updateEventData(index, 'event_type', 'company');
                           }}
                           className="text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500"
                         />
@@ -612,11 +612,9 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                           name={`eventType-${index}`}
                           value="htw"
                           checked={event.event_type === 'htw'}
-                          onChange={(e) => {
-                            updateEventData(index, 'event_type', e.target.value);
-                            if (e.target.value === 'htw') {
-                              updateEventData(index, 'company_id', null);
-                            }
+                          onChange={() => {
+                            updateEventData(index, 'event_type', 'htw');
+                            updateEventData(index, 'company_id', null);
                           }}
                           className="text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500"
                         />
