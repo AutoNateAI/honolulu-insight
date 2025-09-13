@@ -8,7 +8,8 @@ import {
   Settings,
   Home,
   Search,
-  LogOut
+  LogOut,
+  Calendar
 } from "lucide-react";
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,18 @@ const navigationItems = [
     url: "/industries",
     icon: Building2,
     color: "sunset-coral"
+  },
+  {
+    title: "Companies",
+    url: "/companies",
+    icon: Building2,
+    color: "tropical-primary"
+  },
+  {
+    title: "Events",
+    url: "/events",
+    icon: Calendar,
+    color: "plumeria-primary"
   },
   {
     title: "Geographic",

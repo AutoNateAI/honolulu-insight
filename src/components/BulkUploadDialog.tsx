@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -21,22 +22,22 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, Plus, Minus } from 'lucide-react';
+import { Upload, Plus, Minus, Calendar, Linkedin } from 'lucide-react';
 
 interface BulkUploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 interface Company {
   name: string;
   website: string;
-  location: string;
   island: string;
+  location: string;
+  industry_id: string;
   company_size: string;
   engagement_level: string;
-  industry_id: string;
 }
 
 interface Member {
@@ -44,7 +45,6 @@ interface Member {
   email: string;
   job_title: string;
   island: string;
-  bio: string;
   linkedin_url: string;
   github_url: string;
   skills: string[];
@@ -53,31 +53,56 @@ interface Member {
   industry_id: string;
 }
 
+interface Event {
+  name: string;
+  description: string;
+  event_type: string;
+  company_id: string;
+  organizer_name: string;
+  organizer_email: string;
+  event_date: string;
+  location: string;
+  promotion_channels: string[];
+  attendee_count: number;
+}
+
+interface LinkedInPost {
+  company_id: string;
+  member_id: string;
+  post_url: string;
+  post_content: string;
+  post_date: string;
+  post_type: string;
+  engagement_metrics: {
+    likes?: number;
+    comments?: number;
+    shares?: number;
+  };
+}
+
 export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDialogProps) {
-  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('companies');
   const [industries, setIndustries] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
+  const { toast } = useToast();
 
-  // Company form data
   const [companyData, setCompanyData] = useState<Company[]>([{
     name: '',
     website: '',
-    location: '',
     island: '',
-    company_size: 'Small (1-50)',
-    engagement_level: 'Medium',
-    industry_id: ''
+    location: '',
+    industry_id: '',
+    company_size: 'Medium',
+    engagement_level: 'Medium'
   }]);
 
-  // Member form data
   const [memberData, setMemberData] = useState<Member[]>([{
     name: '',
     email: '',
     job_title: '',
     island: '',
-    bio: '',
     linkedin_url: '',
     github_url: '',
     skills: [],
@@ -86,33 +111,61 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
     industry_id: ''
   }]);
 
-  // Fetch data when dialog opens
+  const [eventData, setEventData] = useState<Event[]>([{
+    name: '',
+    description: '',
+    event_type: 'company',
+    company_id: '',
+    organizer_name: '',
+    organizer_email: '',
+    event_date: '',
+    location: '',
+    promotion_channels: [],
+    attendee_count: 0
+  }]);
+
+  const [linkedinData, setLinkedinData] = useState<LinkedInPost[]>([{
+    company_id: '',
+    member_id: '',
+    post_url: '',
+    post_content: '',
+    post_date: '',
+    post_type: 'company_update',
+    engagement_metrics: {}
+  }]);
+
   useEffect(() => {
     if (open) {
       fetchIndustries();
       fetchCompanies();
+      fetchMembers();
     }
   }, [open]);
 
   const fetchIndustries = async () => {
-    const { data } = await supabase.from('industries').select('*');
+    const { data } = await supabase.from('industries').select('id, name').order('name');
     setIndustries(data || []);
   };
 
   const fetchCompanies = async () => {
-    const { data } = await supabase.from('companies').select('*');
+    const { data } = await supabase.from('companies').select('id, name').order('name');
     setCompanies(data || []);
+  };
+
+  const fetchMembers = async () => {
+    const { data } = await supabase.from('members').select('id, name').order('name');
+    setMembers(data || []);
   };
 
   const addCompanyRow = () => {
     setCompanyData([...companyData, {
       name: '',
       website: '',
-      location: '',
       island: '',
-      company_size: 'Small (1-50)',
-      engagement_level: 'Medium',
-      industry_id: ''
+      location: '',
+      industry_id: '',
+      company_size: 'Medium',
+      engagement_level: 'Medium'
     }]);
   };
 
@@ -134,7 +187,6 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
       email: '',
       job_title: '',
       island: '',
-      bio: '',
       linkedin_url: '',
       github_url: '',
       skills: [],
@@ -154,6 +206,57 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
     const updated = [...memberData];
     updated[index] = { ...updated[index], [field]: value };
     setMemberData(updated);
+  };
+
+  const addEventRow = () => {
+    setEventData([...eventData, {
+      name: '',
+      description: '',
+      event_type: 'company',
+      company_id: '',
+      organizer_name: '',
+      organizer_email: '',
+      event_date: '',
+      location: '',
+      promotion_channels: [],
+      attendee_count: 0
+    }]);
+  };
+
+  const removeEventRow = (index: number) => {
+    if (eventData.length > 1) {
+      setEventData(eventData.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateEventData = (index: number, field: keyof Event, value: string | string[] | number) => {
+    const updated = [...eventData];
+    updated[index] = { ...updated[index], [field]: value };
+    setEventData(updated);
+  };
+
+  const addLinkedInRow = () => {
+    setLinkedinData([...linkedinData, {
+      company_id: '',
+      member_id: '',
+      post_url: '',
+      post_content: '',
+      post_date: '',
+      post_type: 'company_update',
+      engagement_metrics: {}
+    }]);
+  };
+
+  const removeLinkedInRow = (index: number) => {
+    if (linkedinData.length > 1) {
+      setLinkedinData(linkedinData.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateLinkedInData = (index: number, field: keyof LinkedInPost, value: any) => {
+    const updated = [...linkedinData];
+    updated[index] = { ...updated[index], [field]: value };
+    setLinkedinData(updated);
   };
 
   const handleSubmit = async () => {
@@ -178,7 +281,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           title: "Success!",
           description: `${validCompanies.length} companies uploaded successfully.`,
         });
-      } else {
+      } else if (activeTab === 'members') {
         const validMembers = memberData.filter(member => 
           member.name.trim() && member.industry_id
         );
@@ -197,15 +300,53 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           title: "Success!",
           description: `${validMembers.length} members uploaded successfully.`,
         });
+      } else if (activeTab === 'events') {
+        const validEvents = eventData.filter(event => 
+          event.name.trim() && event.event_date
+        );
+        
+        if (validEvents.length === 0) {
+          throw new Error('Please fill in at least one event with name and date');
+        }
+
+        const { error } = await supabase
+          .from('events')
+          .insert(validEvents);
+        
+        if (error) throw error;
+
+        toast({
+          title: "Success!",
+          description: `${validEvents.length} events uploaded successfully.`,
+        });
+      } else if (activeTab === 'posts') {
+        const validPosts = linkedinData.filter(post => 
+          post.post_url.trim() && post.post_date
+        );
+        
+        if (validPosts.length === 0) {
+          throw new Error('Please fill in at least one LinkedIn post with URL and date');
+        }
+
+        const { error } = await supabase
+          .from('linkedin_posts')
+          .insert(validPosts);
+        
+        if (error) throw error;
+
+        toast({
+          title: "Success!",
+          description: `${validPosts.length} LinkedIn posts uploaded successfully.`,
+        });
       }
 
+      onSuccess?.();
       onOpenChange(false);
-      onSuccess();
     } catch (error: any) {
       console.error('Error uploading data:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to upload data. Please try again.",
+        description: error.message || "Failed to upload data",
         variant: "destructive",
       });
     } finally {
@@ -215,19 +356,19 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[80vh] glass-card border-white/20 bg-gradient-to-br from-ocean-primary/80 via-sunset-primary/70 to-tropical-primary/80 backdrop-blur-xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-ocean-primary/20 via-tropical-light/20 to-sunset-coral/20 backdrop-blur-md border border-white/20">
         <DialogHeader>
           <DialogTitle className="text-white text-xl font-bold flex items-center gap-2">
             <Upload className="w-5 h-5" />
             Bulk Upload Data
           </DialogTitle>
           <DialogDescription className="text-white/90">
-            Upload companies and members data to the HTW network database.
+            Upload companies, members, events, and LinkedIn posts to the HTW network database.
           </DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-white/20 border border-white/30">
+          <TabsList className="grid w-full grid-cols-4 bg-white/20 border border-white/30">
             <TabsTrigger 
               value="companies" 
               className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900"
@@ -240,8 +381,23 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
             >
               Members
             </TabsTrigger>
+            <TabsTrigger 
+              value="events"
+              className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900"
+            >
+              <Calendar className="w-4 h-4 mr-2" />
+              Events
+            </TabsTrigger>
+            <TabsTrigger 
+              value="posts"
+              className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900"
+            >
+              <Linkedin className="w-4 h-4 mr-2" />
+              LinkedIn
+            </TabsTrigger>
           </TabsList>
 
+          {/* Companies Tab */}
           <TabsContent value="companies" className="overflow-y-auto max-h-[50vh] space-y-4">
             {companyData.map((company, index) => (
               <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
@@ -280,13 +436,19 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Location</Label>
-                    <Input
-                      value={company.location}
-                      onChange={(e) => updateCompanyData(index, 'location', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
-                      placeholder="City, State"
-                    />
+                    <Label className="text-white/90">Industry *</Label>
+                    <Select value={company.industry_id} onValueChange={(value) => updateCompanyData(index, 'industry_id', value)}>
+                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                        <SelectValue placeholder="Select industry" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {industries.map((industry) => (
+                          <SelectItem key={industry.id} value={industry.id}>
+                            {industry.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label className="text-white/90">Island</Label>
@@ -294,7 +456,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       <SelectTrigger className="bg-white/20 border-white/30 text-white">
                         <SelectValue placeholder="Select island" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent>
                         <SelectItem value="Oahu">Oahu</SelectItem>
                         <SelectItem value="Maui">Maui</SelectItem>
                         <SelectItem value="Big Island">Big Island</SelectItem>
@@ -304,42 +466,14 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label className="text-white/90">Company Size</Label>
-                    <Select value={company.company_size} onValueChange={(value) => updateCompanyData(index, 'company_size', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectItem value="Small (1-50)">Small (1-50)</SelectItem>
-                        <SelectItem value="Medium (51-200)">Medium (51-200)</SelectItem>
-                        <SelectItem value="Large (201+)">Large (201+)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-white/90">Industry *</Label>
-                    <Select value={company.industry_id} onValueChange={(value) => updateCompanyData(index, 'industry_id', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
-                        <SelectValue placeholder="Select industry" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {industries.map((industry) => (
-                          <SelectItem key={industry.id} value={industry.id}>
-                            {industry.icon} {industry.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
               </div>
             ))}
             
             <Button
               type="button"
-              variant="outline"
               onClick={addCompanyRow}
+              variant="outline"
               className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -347,6 +481,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
             </Button>
           </TabsContent>
 
+          {/* Members Tab */}
           <TabsContent value="members" className="overflow-y-auto max-h-[50vh] space-y-4">
             {memberData.map((member, index) => (
               <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
@@ -367,12 +502,12 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-white/90">Name *</Label>
+                    <Label className="text-white/90">Full Name *</Label>
                     <Input
                       value={member.name}
                       onChange={(e) => updateMemberData(index, 'name', e.target.value)}
                       className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
-                      placeholder="Full name"
+                      placeholder="John Doe"
                     />
                   </div>
                   <div>
@@ -381,7 +516,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       value={member.email}
                       onChange={(e) => updateMemberData(index, 'email', e.target.value)}
                       className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
-                      placeholder="email@example.com"
+                      placeholder="john@example.com"
                     />
                   </div>
                   <div>
@@ -390,32 +525,197 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       value={member.job_title}
                       onChange={(e) => updateMemberData(index, 'job_title', e.target.value)}
                       className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
-                      placeholder="Position title"
+                      placeholder="Software Engineer"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Island</Label>
-                    <Select value={member.island} onValueChange={(value) => updateMemberData(index, 'island', value)}>
+                    <Label className="text-white/90">LinkedIn URL</Label>
+                    <Input
+                      value={member.linkedin_url}
+                      onChange={(e) => updateMemberData(index, 'linkedin_url', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      placeholder="https://linkedin.com/in/johndoe"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            <Button
+              type="button"
+              onClick={addMemberRow}
+              variant="outline"
+              className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Another Member
+            </Button>
+          </TabsContent>
+
+          {/* Events Tab */}
+          <TabsContent value="events" className="overflow-y-auto max-h-[50vh] space-y-4">
+            {eventData.map((event, index) => (
+              <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
+                <div className="flex justify-between items-center">
+                  <Label className="text-white font-semibold">Event {index + 1}</Label>
+                  {eventData.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeEventRow(index)}
+                      className="text-red-300 hover:text-red-100 hover:bg-red-500/20"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-white/90">Event Name *</Label>
+                    <Input
+                      value={event.name}
+                      onChange={(e) => updateEventData(index, 'name', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      placeholder="Tech Innovation Summit"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Event Date *</Label>
+                    <Input
+                      type="date"
+                      value={event.event_date}
+                      onChange={(e) => updateEventData(index, 'event_date', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Event Type</Label>
+                    <Select value={event.event_type} onValueChange={(value) => updateEventData(index, 'event_type', value)}>
                       <SelectTrigger className="bg-white/20 border-white/30 text-white">
-                        <SelectValue placeholder="Select island" />
+                        <SelectValue placeholder="Select type" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectItem value="Oahu">Oahu</SelectItem>
-                        <SelectItem value="Maui">Maui</SelectItem>
-                        <SelectItem value="Big Island">Big Island</SelectItem>
-                        <SelectItem value="Kauai">Kauai</SelectItem>
-                        <SelectItem value="Molokai">Molokai</SelectItem>
-                        <SelectItem value="Lanai">Lanai</SelectItem>
+                      <SelectContent>
+                        <SelectItem value="company">Company Event</SelectItem>
+                        <SelectItem value="htw">HTW Event</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Organizer Name</Label>
+                    <Input
+                      value={event.organizer_name}
+                      onChange={(e) => updateEventData(index, 'organizer_name', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      placeholder="Jane Smith"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Location</Label>
+                    <Input
+                      value={event.location}
+                      onChange={(e) => updateEventData(index, 'location', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      placeholder="Honolulu Convention Center"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Attendee Count</Label>
+                    <Input
+                      type="number"
+                      value={event.attendee_count}
+                      onChange={(e) => updateEventData(index, 'attendee_count', parseInt(e.target.value) || 0)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="text-white/90">Description</Label>
+                  <Textarea
+                    value={event.description}
+                    onChange={(e) => updateEventData(index, 'description', e.target.value)}
+                    className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                    placeholder="Event description..."
+                    rows={2}
+                  />
+                </div>
+              </div>
+            ))}
+            
+            <Button
+              type="button"
+              onClick={addEventRow}
+              variant="outline"
+              className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Another Event
+            </Button>
+          </TabsContent>
+
+          {/* LinkedIn Posts Tab */}
+          <TabsContent value="posts" className="overflow-y-auto max-h-[50vh] space-y-4">
+            {linkedinData.map((post, index) => (
+              <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
+                <div className="flex justify-between items-center">
+                  <Label className="text-white font-semibold">LinkedIn Post {index + 1}</Label>
+                  {linkedinData.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeLinkedInRow(index)}
+                      className="text-red-300 hover:text-red-100 hover:bg-red-500/20"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-white/90">Post URL *</Label>
+                    <Input
+                      value={post.post_url}
+                      onChange={(e) => updateLinkedInData(index, 'post_url', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      placeholder="https://linkedin.com/posts/..."
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Post Date *</Label>
+                    <Input
+                      type="date"
+                      value={post.post_date}
+                      onChange={(e) => updateLinkedInData(index, 'post_date', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white/90">Post Type</Label>
+                    <Select value={post.post_type} onValueChange={(value) => updateLinkedInData(index, 'post_type', value)}>
+                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="company_update">Company Update</SelectItem>
+                        <SelectItem value="job_posting">Job Posting</SelectItem>
+                        <SelectItem value="event_promotion">Event Promotion</SelectItem>
+                        <SelectItem value="thought_leadership">Thought Leadership</SelectItem>
+                        <SelectItem value="achievement">Achievement</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
                     <Label className="text-white/90">Company</Label>
-                    <Select value={member.company_id} onValueChange={(value) => updateMemberData(index, 'company_id', value)}>
+                    <Select value={post.company_id} onValueChange={(value) => updateLinkedInData(index, 'company_id', value)}>
                       <SelectTrigger className="bg-white/20 border-white/30 text-white">
                         <SelectValue placeholder="Select company" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent>
                         {companies.map((company) => (
                           <SelectItem key={company.id} value={company.id}>
                             {company.name}
@@ -424,30 +724,16 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label className="text-white/90">Industry *</Label>
-                    <Select value={member.industry_id} onValueChange={(value) => updateMemberData(index, 'industry_id', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
-                        <SelectValue placeholder="Select industry" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {industries.map((industry) => (
-                          <SelectItem key={industry.id} value={industry.id}>
-                            {industry.icon} {industry.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
                 
                 <div>
-                  <Label className="text-white/90">Skills (comma-separated)</Label>
-                  <Input
-                    value={member.skills.join(', ')}
-                    onChange={(e) => updateMemberData(index, 'skills', e.target.value.split(',').map(s => s.trim()))}
+                  <Label className="text-white/90">Post Content</Label>
+                  <Textarea
+                    value={post.post_content}
+                    onChange={(e) => updateLinkedInData(index, 'post_content', e.target.value)}
                     className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
-                    placeholder="JavaScript, React, Node.js"
+                    placeholder="Post content..."
+                    rows={3}
                   />
                 </div>
               </div>
@@ -455,41 +741,30 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
             
             <Button
               type="button"
+              onClick={addLinkedInRow}
               variant="outline"
-              onClick={addMemberRow}
               className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add Another Member
+              Add Another LinkedIn Post
             </Button>
           </TabsContent>
         </Tabs>
 
-        <DialogFooter className="pt-4">
+        <DialogFooter className="flex gap-2">
           <Button
-            type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:border-white/50"
+            className="bg-white/10 border-white/30 text-white hover:bg-white/20"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={loading}
-            className="bg-white text-gray-900 hover:bg-white/90 font-semibold"
+            className="bg-white text-black hover:bg-white/90"
           >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              <>
-                <Upload className="mr-2 h-4 w-4" />
-                Upload {activeTab === 'companies' ? 'Companies' : 'Members'}
-              </>
-            )}
+            {loading ? 'Uploading...' : `Upload ${activeTab === 'companies' ? 'Companies' : activeTab === 'members' ? 'Members' : activeTab === 'events' ? 'Events' : 'LinkedIn Posts'}`}
           </Button>
         </DialogFooter>
       </DialogContent>

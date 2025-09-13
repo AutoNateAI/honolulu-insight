@@ -64,6 +64,110 @@ export type Database = {
           },
         ]
       }
+      event_attendees: {
+        Row: {
+          attendee_company: string | null
+          attendee_email: string | null
+          attendee_name: string | null
+          attendee_title: string | null
+          created_at: string
+          event_id: string
+          id: string
+          member_id: string | null
+        }
+        Insert: {
+          attendee_company?: string | null
+          attendee_email?: string | null
+          attendee_name?: string | null
+          attendee_title?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          member_id?: string | null
+        }
+        Update: {
+          attendee_company?: string | null
+          attendee_email?: string | null
+          attendee_name?: string | null
+          attendee_title?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          member_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_attendees_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          attendee_count: number | null
+          company_id: string | null
+          created_at: string
+          description: string | null
+          event_date: string
+          event_type: string
+          id: string
+          location: string | null
+          name: string
+          organizer_email: string | null
+          organizer_name: string | null
+          promotion_channels: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          attendee_count?: number | null
+          company_id?: string | null
+          created_at?: string
+          description?: string | null
+          event_date: string
+          event_type?: string
+          id?: string
+          location?: string | null
+          name: string
+          organizer_email?: string | null
+          organizer_name?: string | null
+          promotion_channels?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          attendee_count?: number | null
+          company_id?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          event_type?: string
+          id?: string
+          location?: string | null
+          name?: string
+          organizer_email?: string | null
+          organizer_name?: string | null
+          promotion_channels?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       industries: {
         Row: {
           color: string
@@ -138,6 +242,60 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      linkedin_posts: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          engagement_metrics: Json | null
+          id: string
+          member_id: string | null
+          post_content: string | null
+          post_date: string
+          post_type: string | null
+          post_url: string
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          engagement_metrics?: Json | null
+          id?: string
+          member_id?: string | null
+          post_content?: string | null
+          post_date: string
+          post_type?: string | null
+          post_url: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          engagement_metrics?: Json | null
+          id?: string
+          member_id?: string | null
+          post_content?: string | null
+          post_date?: string
+          post_type?: string | null
+          post_url?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "linkedin_posts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linkedin_posts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       members: {
         Row: {

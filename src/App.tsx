@@ -9,6 +9,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { DashboardLayout } from "./components/DashboardLayout";
 import { Dashboard } from "./pages/Dashboard";
 import Industries from "./pages/Industries";
+import Companies from "./pages/Companies";
+import Events from "./pages/Events";
 import Members from "./pages/Members";
 import Geographic from "./pages/Geographic";
 import Analytics from "./pages/Analytics";
@@ -39,6 +41,20 @@ const App = () => (
               <ProtectedRoute>
                 <DashboardLayout>
                   <Industries />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/companies" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Companies />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/events" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <Events />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
