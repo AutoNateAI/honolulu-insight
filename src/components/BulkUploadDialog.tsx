@@ -356,41 +356,41 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-ocean-primary/20 via-tropical-light/20 to-sunset-coral/20 backdrop-blur-md border border-white/20">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900/95 backdrop-blur-md border border-gray-700">
         <DialogHeader>
           <DialogTitle className="text-white text-xl font-bold flex items-center gap-2">
             <Upload className="w-5 h-5" />
             Bulk Upload Data
           </DialogTitle>
-          <DialogDescription className="text-white/90">
+          <DialogDescription className="text-gray-300">
             Upload companies, members, events, and LinkedIn posts to the HTW network database.
           </DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-white/20 border border-white/30">
+          <TabsList className="grid w-full grid-cols-4 bg-gray-800 border border-gray-600">
             <TabsTrigger 
               value="companies" 
-              className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900"
+              className="text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               Companies
             </TabsTrigger>
             <TabsTrigger 
               value="members"
-              className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900"
+              className="text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               Members
             </TabsTrigger>
             <TabsTrigger 
               value="events"
-              className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900"
+              className="text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               <Calendar className="w-4 h-4 mr-2" />
               Events
             </TabsTrigger>
             <TabsTrigger 
               value="posts"
-              className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900"
+              className="text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               <Linkedin className="w-4 h-4 mr-2" />
               LinkedIn
@@ -400,7 +400,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           {/* Companies Tab */}
           <TabsContent value="companies" className="overflow-y-auto max-h-[50vh] space-y-4">
             {companyData.map((company, index) => (
-              <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
+              <div key={index} className="bg-gray-800 rounded-lg p-4 space-y-4 border border-gray-600">
                 <div className="flex justify-between items-center">
                   <Label className="text-white font-semibold">Company {index + 1}</Label>
                   {companyData.length > 1 && (
@@ -409,7 +409,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       variant="ghost"
                       size="sm"
                       onClick={() => removeCompanyRow(index)}
-                      className="text-red-300 hover:text-red-100 hover:bg-red-500/20"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
                     >
                       <Minus className="w-4 h-4" />
                     </Button>
@@ -418,32 +418,32 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-white/90">Company Name *</Label>
+                    <Label className="text-gray-300">Company Name *</Label>
                     <Input
                       value={company.name}
                       onChange={(e) => updateCompanyData(index, 'name', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="Company name"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Website</Label>
+                    <Label className="text-gray-300">Website</Label>
                     <Input
                       value={company.website}
                       onChange={(e) => updateCompanyData(index, 'website', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="https://company.com"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Industry *</Label>
+                    <Label className="text-gray-300">Industry *</Label>
                     <Select value={company.industry_id} onValueChange={(value) => updateCompanyData(index, 'industry_id', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select industry" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-gray-800 border-gray-600">
                         {industries.map((industry) => (
-                          <SelectItem key={industry.id} value={industry.id}>
+                          <SelectItem key={industry.id} value={industry.id} className="text-white hover:bg-gray-700">
                             {industry.name}
                           </SelectItem>
                         ))}
@@ -451,18 +451,18 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-white/90">Island</Label>
+                    <Label className="text-gray-300">Island</Label>
                     <Select value={company.island} onValueChange={(value) => updateCompanyData(index, 'island', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select island" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Oahu">Oahu</SelectItem>
-                        <SelectItem value="Maui">Maui</SelectItem>
-                        <SelectItem value="Big Island">Big Island</SelectItem>
-                        <SelectItem value="Kauai">Kauai</SelectItem>
-                        <SelectItem value="Molokai">Molokai</SelectItem>
-                        <SelectItem value="Lanai">Lanai</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="Oahu" className="text-white hover:bg-gray-700">Oahu</SelectItem>
+                        <SelectItem value="Maui" className="text-white hover:bg-gray-700">Maui</SelectItem>
+                        <SelectItem value="Big Island" className="text-white hover:bg-gray-700">Big Island</SelectItem>
+                        <SelectItem value="Kauai" className="text-white hover:bg-gray-700">Kauai</SelectItem>
+                        <SelectItem value="Molokai" className="text-white hover:bg-gray-700">Molokai</SelectItem>
+                        <SelectItem value="Lanai" className="text-white hover:bg-gray-700">Lanai</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -474,7 +474,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
               type="button"
               onClick={addCompanyRow}
               variant="outline"
-              className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
+              className="w-full bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Another Company
@@ -484,7 +484,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           {/* Members Tab */}
           <TabsContent value="members" className="overflow-y-auto max-h-[50vh] space-y-4">
             {memberData.map((member, index) => (
-              <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
+              <div key={index} className="bg-gray-800 rounded-lg p-4 space-y-4 border border-gray-600">
                 <div className="flex justify-between items-center">
                   <Label className="text-white font-semibold">Member {index + 1}</Label>
                   {memberData.length > 1 && (
@@ -493,7 +493,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       variant="ghost"
                       size="sm"
                       onClick={() => removeMemberRow(index)}
-                      className="text-red-300 hover:text-red-100 hover:bg-red-500/20"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
                     >
                       <Minus className="w-4 h-4" />
                     </Button>
@@ -502,38 +502,38 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-white/90">Full Name *</Label>
+                    <Label className="text-gray-300">Full Name *</Label>
                     <Input
                       value={member.name}
                       onChange={(e) => updateMemberData(index, 'name', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="John Doe"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Email</Label>
+                    <Label className="text-gray-300">Email</Label>
                     <Input
                       value={member.email}
                       onChange={(e) => updateMemberData(index, 'email', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="john@example.com"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Job Title</Label>
+                    <Label className="text-gray-300">Job Title</Label>
                     <Input
                       value={member.job_title}
                       onChange={(e) => updateMemberData(index, 'job_title', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="Software Engineer"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">LinkedIn URL</Label>
+                    <Label className="text-gray-300">LinkedIn URL</Label>
                     <Input
                       value={member.linkedin_url}
                       onChange={(e) => updateMemberData(index, 'linkedin_url', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="https://linkedin.com/in/johndoe"
                     />
                   </div>
@@ -545,7 +545,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
               type="button"
               onClick={addMemberRow}
               variant="outline"
-              className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
+              className="w-full bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Another Member
@@ -555,7 +555,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           {/* Events Tab */}
           <TabsContent value="events" className="overflow-y-auto max-h-[50vh] space-y-4">
             {eventData.map((event, index) => (
-              <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
+              <div key={index} className="bg-gray-800 rounded-lg p-4 space-y-4 border border-gray-600">
                 <div className="flex justify-between items-center">
                   <Label className="text-white font-semibold">Event {index + 1}</Label>
                   {eventData.length > 1 && (
@@ -564,7 +564,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       variant="ghost"
                       size="sm"
                       onClick={() => removeEventRow(index)}
-                      className="text-red-300 hover:text-red-100 hover:bg-red-500/20"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
                     >
                       <Minus className="w-4 h-4" />
                     </Button>
@@ -573,71 +573,71 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-white/90">Event Name *</Label>
+                    <Label className="text-gray-300">Event Name *</Label>
                     <Input
                       value={event.name}
                       onChange={(e) => updateEventData(index, 'name', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="Tech Innovation Summit"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Event Date *</Label>
+                    <Label className="text-gray-300">Event Date *</Label>
                     <Input
                       type="date"
                       value={event.event_date}
                       onChange={(e) => updateEventData(index, 'event_date', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Event Type</Label>
+                    <Label className="text-gray-300">Event Type</Label>
                     <Select value={event.event_type} onValueChange={(value) => updateEventData(index, 'event_type', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="company">Company Event</SelectItem>
-                        <SelectItem value="htw">HTW Event</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="company" className="text-white hover:bg-gray-700">Company Event</SelectItem>
+                        <SelectItem value="htw" className="text-white hover:bg-gray-700">HTW Event</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-white/90">Organizer Name</Label>
+                    <Label className="text-gray-300">Organizer Name</Label>
                     <Input
                       value={event.organizer_name}
                       onChange={(e) => updateEventData(index, 'organizer_name', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="Jane Smith"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Location</Label>
+                    <Label className="text-gray-300">Location</Label>
                     <Input
                       value={event.location}
                       onChange={(e) => updateEventData(index, 'location', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="Honolulu Convention Center"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Attendee Count</Label>
+                    <Label className="text-gray-300">Attendee Count</Label>
                     <Input
                       type="number"
                       value={event.attendee_count}
                       onChange={(e) => updateEventData(index, 'attendee_count', parseInt(e.target.value) || 0)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="0"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <Label className="text-white/90">Description</Label>
+                  <Label className="text-gray-300">Description</Label>
                   <Textarea
                     value={event.description}
                     onChange={(e) => updateEventData(index, 'description', e.target.value)}
-                    className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                     placeholder="Event description..."
                     rows={2}
                   />
@@ -649,7 +649,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
               type="button"
               onClick={addEventRow}
               variant="outline"
-              className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
+              className="w-full bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Another Event
@@ -659,7 +659,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           {/* LinkedIn Posts Tab */}
           <TabsContent value="posts" className="overflow-y-auto max-h-[50vh] space-y-4">
             {linkedinData.map((post, index) => (
-              <div key={index} className="bg-white/10 rounded-lg p-4 space-y-4 border border-white/20">
+              <div key={index} className="bg-gray-800 rounded-lg p-4 space-y-4 border border-gray-600">
                 <div className="flex justify-between items-center">
                   <Label className="text-white font-semibold">LinkedIn Post {index + 1}</Label>
                   {linkedinData.length > 1 && (
@@ -668,7 +668,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       variant="ghost"
                       size="sm"
                       onClick={() => removeLinkedInRow(index)}
-                      className="text-red-300 hover:text-red-100 hover:bg-red-500/20"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
                     >
                       <Minus className="w-4 h-4" />
                     </Button>
@@ -677,47 +677,47 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-white/90">Post URL *</Label>
+                    <Label className="text-gray-300">Post URL *</Label>
                     <Input
                       value={post.post_url}
                       onChange={(e) => updateLinkedInData(index, 'post_url', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       placeholder="https://linkedin.com/posts/..."
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Post Date *</Label>
+                    <Label className="text-gray-300">Post Date *</Label>
                     <Input
                       type="date"
                       value={post.post_date}
                       onChange={(e) => updateLinkedInData(index, 'post_date', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                     />
                   </div>
                   <div>
-                    <Label className="text-white/90">Post Type</Label>
+                    <Label className="text-gray-300">Post Type</Label>
                     <Select value={post.post_type} onValueChange={(value) => updateLinkedInData(index, 'post_type', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="company_update">Company Update</SelectItem>
-                        <SelectItem value="job_posting">Job Posting</SelectItem>
-                        <SelectItem value="event_promotion">Event Promotion</SelectItem>
-                        <SelectItem value="thought_leadership">Thought Leadership</SelectItem>
-                        <SelectItem value="achievement">Achievement</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="company_update" className="text-white hover:bg-gray-700">Company Update</SelectItem>
+                        <SelectItem value="job_posting" className="text-white hover:bg-gray-700">Job Posting</SelectItem>
+                        <SelectItem value="event_promotion" className="text-white hover:bg-gray-700">Event Promotion</SelectItem>
+                        <SelectItem value="thought_leadership" className="text-white hover:bg-gray-700">Thought Leadership</SelectItem>
+                        <SelectItem value="achievement" className="text-white hover:bg-gray-700">Achievement</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-white/90">Company</Label>
+                    <Label className="text-gray-300">Company</Label>
                     <Select value={post.company_id} onValueChange={(value) => updateLinkedInData(index, 'company_id', value)}>
-                      <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Select company" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-gray-800 border-gray-600">
                         {companies.map((company) => (
-                          <SelectItem key={company.id} value={company.id}>
+                          <SelectItem key={company.id} value={company.id} className="text-white hover:bg-gray-700">
                             {company.name}
                           </SelectItem>
                         ))}
@@ -727,11 +727,11 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                 </div>
                 
                 <div>
-                  <Label className="text-white/90">Post Content</Label>
+                  <Label className="text-gray-300">Post Content</Label>
                   <Textarea
                     value={post.post_content}
                     onChange={(e) => updateLinkedInData(index, 'post_content', e.target.value)}
-                    className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                     placeholder="Post content..."
                     rows={3}
                   />
@@ -743,7 +743,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
               type="button"
               onClick={addLinkedInRow}
               variant="outline"
-              className="w-full bg-white/10 border-white/30 text-white hover:bg-white/20"
+              className="w-full bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Another LinkedIn Post
@@ -755,14 +755,14 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+            className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={loading}
-            className="bg-white text-black hover:bg-white/90"
+            className="bg-blue-600 text-white hover:bg-blue-700"
           >
             {loading ? 'Uploading...' : `Upload ${activeTab === 'companies' ? 'Companies' : activeTab === 'members' ? 'Members' : activeTab === 'events' ? 'Events' : 'LinkedIn Posts'}`}
           </Button>
