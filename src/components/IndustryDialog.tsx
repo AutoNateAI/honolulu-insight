@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -76,24 +76,60 @@ export function IndustryDialog({
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Omit<Industry, 'id'>>({
-    name: industry?.name || '',
-    description: industry?.description || '',
-    member_count: industry?.member_count || 0,
-    company_count: industry?.company_count || 0,
-    growth_rate: industry?.growth_rate || 0,
-    color: industry?.color || industryColors[0],
-    icon: industry?.icon || '🏢',
+    name: '',
+    description: '',
+    member_count: 0,
+    company_count: 0,
+    growth_rate: 0,
+    color: industryColors[0],
+    icon: '🏢',
   });
+
+  // Update form when industry prop changes
+  useEffect(() => {
+    if (industry && mode === 'edit') {
+      setFormData({
+        name: industry.name,
+        description: industry.description,
+        member_count: industry.member_count,
+        company_count: industry.company_count,
+        growth_rate: industry.growth_rate,
+        color: industry.color,
+        icon: industry.icon,
+      });
+    } else {
+      // Reset form for add mode
+      setFormData({
+        name: '',
+        description: '',
+        member_count: 0,
+        company_count: 0,
+        growth_rate: 0,
+        color: industryColors[0],
+        icon: '🏢',
+      });
+    }
+  }, [industry, mode, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // Don't include member_count and company_count in the submission
+      // These will be calculated by the database
+      const submitData = {
+        name: formData.name,
+        description: formData.description,
+        growth_rate: formData.growth_rate,
+        color: formData.color,
+        icon: formData.icon,
+      };
+
       if (mode === 'add') {
         const { error } = await supabase
           .from('industries')
-          .insert([formData]);
+          .insert([submitData]);
 
         if (error) throw error;
 
@@ -104,7 +140,7 @@ export function IndustryDialog({
       } else {
         const { error } = await supabase
           .from('industries')
-          .update(formData)
+          .update(submitData)
           .eq('id', industry?.id);
 
         if (error) throw error;
@@ -117,17 +153,6 @@ export function IndustryDialog({
 
       onOpenChange(false);
       onSuccess();
-      
-      // Reset form
-      setFormData({
-        name: '',
-        description: '',
-        member_count: 0,
-        company_count: 0,
-        growth_rate: 0,
-        color: industryColors[0],
-        icon: '🏢',
-      });
     } catch (error) {
       console.error('Error saving industry:', error);
       toast({
@@ -203,26 +228,16 @@ export function IndustryDialog({
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="members" className="text-white font-semibold">Members</Label>
-              <Input
-                id="members"
-                type="number"
-                value={formData.member_count}
-                onChange={(e) => setFormData({ ...formData, member_count: parseInt(e.target.value) || 0 })}
-                min="0"
-                className="bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white/50"
-              />
+              <div className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white/70">
+                {formData.member_count.toLocaleString()} (auto-calculated)
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="companies" className="text-white font-semibold">Companies</Label>
-              <Input
-                id="companies"
-                type="number"
-                value={formData.company_count}
-                onChange={(e) => setFormData({ ...formData, company_count: parseInt(e.target.value) || 0 })}
-                min="0"
-                className="bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white/50"
-              />
+              <div className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white/70">
+                {formData.company_count.toLocaleString()} (auto-calculated)
+              </div>
             </div>
 
             <div className="space-y-2">
