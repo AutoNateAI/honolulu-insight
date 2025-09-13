@@ -7,8 +7,11 @@ import {
   TrendingUp, 
   Settings,
   Home,
-  Search
+  Search,
+  LogOut
 } from "lucide-react";
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
@@ -71,11 +74,16 @@ const adminItems = [
 ];
 
 export function HTWSidebar() {
+  const { signOut, user } = useAuth();
   const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
   
   const isCollapsed = state === "collapsed";
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   const isActive = (path: string) => {
     if (path === "/") return currentPath === "/";
@@ -164,9 +172,34 @@ export function HTWSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Footer */}
-        {!isCollapsed && (
-          <div className="mt-auto p-4 border-t border-white/10">
+        {/* Footer with User Profile & Sign Out */}
+        <div className="mt-auto p-4 border-t border-white/10">
+          {!isCollapsed ? (
+            <>
+              <div className="glass-card p-3 mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-sunset-primary to-tropical-primary flex items-center justify-center text-white text-sm font-semibold">
+                    {user?.email?.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">
+                      {user?.email}
+                    </p>
+                    <p className="text-xs text-white/60">HTW Admin</p>
+                  </div>
+                </div>
+              </div>
+              <Button
+                onClick={handleSignOut}
+                variant="outline"
+                size="sm"
+                className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </>
+          ) : (
             <div className="text-center">
               <p className="text-white/60 text-xs font-medium">
                 Where Tech Meets Hawaii
@@ -175,8 +208,8 @@ export function HTWSidebar() {
                 HTW Network © 2025
               </p>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </SidebarContent>
     </Sidebar>
   );

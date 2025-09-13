@@ -14,7 +14,239 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      companies: {
+        Row: {
+          company_size: string | null
+          created_at: string
+          engagement_level: string | null
+          id: string
+          industry_id: string | null
+          island: string | null
+          location: string | null
+          member_count: number | null
+          name: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          company_size?: string | null
+          created_at?: string
+          engagement_level?: string | null
+          id?: string
+          industry_id?: string | null
+          island?: string | null
+          location?: string | null
+          member_count?: number | null
+          name: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          company_size?: string | null
+          created_at?: string
+          engagement_level?: string | null
+          id?: string
+          industry_id?: string | null
+          island?: string | null
+          location?: string | null
+          member_count?: number | null
+          name?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "companies_industry_id_fkey"
+            columns: ["industry_id"]
+            isOneToOne: false
+            referencedRelation: "industries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      industries: {
+        Row: {
+          color: string
+          company_count: number | null
+          created_at: string
+          description: string | null
+          growth_rate: number | null
+          icon: string | null
+          id: string
+          member_count: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          company_count?: number | null
+          created_at?: string
+          description?: string | null
+          growth_rate?: number | null
+          icon?: string | null
+          id?: string
+          member_count?: number | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          company_count?: number | null
+          created_at?: string
+          description?: string | null
+          growth_rate?: number | null
+          icon?: string | null
+          id?: string
+          member_count?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      island_data: {
+        Row: {
+          company_count: number | null
+          coordinates: Json | null
+          created_at: string
+          id: string
+          member_count: number | null
+          name: string
+          population: number | null
+          tech_percentage: number | null
+          updated_at: string
+        }
+        Insert: {
+          company_count?: number | null
+          coordinates?: Json | null
+          created_at?: string
+          id?: string
+          member_count?: number | null
+          name: string
+          population?: number | null
+          tech_percentage?: number | null
+          updated_at?: string
+        }
+        Update: {
+          company_count?: number | null
+          coordinates?: Json | null
+          created_at?: string
+          id?: string
+          member_count?: number | null
+          name?: string
+          population?: number | null
+          tech_percentage?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      members: {
+        Row: {
+          activity_level: string | null
+          bio: string | null
+          company_id: string | null
+          created_at: string
+          email: string | null
+          events_attended: number | null
+          github_url: string | null
+          id: string
+          industry_id: string | null
+          island: string | null
+          job_title: string | null
+          last_event_date: string | null
+          linkedin_url: string | null
+          member_since: string | null
+          name: string
+          skills: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          activity_level?: string | null
+          bio?: string | null
+          company_id?: string | null
+          created_at?: string
+          email?: string | null
+          events_attended?: number | null
+          github_url?: string | null
+          id?: string
+          industry_id?: string | null
+          island?: string | null
+          job_title?: string | null
+          last_event_date?: string | null
+          linkedin_url?: string | null
+          member_since?: string | null
+          name: string
+          skills?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          activity_level?: string | null
+          bio?: string | null
+          company_id?: string | null
+          created_at?: string
+          email?: string | null
+          events_attended?: number | null
+          github_url?: string | null
+          id?: string
+          industry_id?: string | null
+          island?: string | null
+          job_title?: string | null
+          last_event_date?: string | null
+          linkedin_url?: string | null
+          member_since?: string | null
+          name?: string
+          skills?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "members_industry_id_fkey"
+            columns: ["industry_id"]
+            isOneToOne: false
+            referencedRelation: "industries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          role: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          role?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          role?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
