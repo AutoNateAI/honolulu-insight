@@ -126,11 +126,11 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
 
   const [linkedinData, setLinkedinData] = useState<LinkedInPost[]>([{
     company_id: '',
-    member_id: '',
+    member_id: 'placeholder',
     post_url: '',
     post_content: '',
     post_date: '',
-    post_type: 'company_update',
+    post_type: 'thought_leadership',
     engagement_metrics: {}
   }]);
 
@@ -238,11 +238,11 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
   const addLinkedInRow = () => {
     setLinkedinData([...linkedinData, {
       company_id: '',
-      member_id: '',
+      member_id: 'placeholder',
       post_url: '',
       post_content: '',
       post_date: '',
-      post_type: 'company_update',
+      post_type: 'thought_leadership',
       engagement_metrics: {}
     }]);
   };
@@ -731,6 +731,42 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                     />
                   </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300">Posted By</Label>
+                    <div className="flex gap-4 mt-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`postType-${index}`}
+                          value="company"
+                          checked={post.company_id !== '' && post.member_id === ''}
+                          onChange={() => {
+                            updateLinkedInData(index, 'company_id', 'placeholder');
+                            updateLinkedInData(index, 'member_id', '');
+                          }}
+                          className="text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-300">Company</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`postType-${index}`}
+                          value="member"
+                          checked={post.member_id !== '' && post.company_id === ''}
+                          onChange={() => {
+                            updateLinkedInData(index, 'member_id', 'placeholder');
+                            updateLinkedInData(index, 'company_id', '');
+                          }}
+                          className="text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-300">Member</span>
+                      </label>
+                    </div>
+                  </div>
                   <div>
                     <Label className="text-gray-300">Post Type</Label>
                     <Select value={post.post_type} onValueChange={(value) => updateLinkedInData(index, 'post_type', value)}>
@@ -746,21 +782,44 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label className="text-gray-300">Company</Label>
-                    <Select value={post.company_id} onValueChange={(value) => updateLinkedInData(index, 'company_id', value)}>
-                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                        <SelectValue placeholder="Select company" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        {companies.map((company) => (
-                          <SelectItem key={company.id} value={company.id} className="text-white hover:bg-gray-700">
-                            {company.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                  {post.company_id !== '' && post.member_id === '' && (
+                    <div>
+                      <Label className="text-gray-300">Company</Label>
+                      <Select value={post.company_id === 'placeholder' ? '' : post.company_id} onValueChange={(value) => updateLinkedInData(index, 'company_id', value)}>
+                        <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                          <SelectValue placeholder="Select company" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-600">
+                          {companies.map((company) => (
+                            <SelectItem key={company.id} value={company.id} className="text-white hover:bg-gray-700">
+                              {company.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  
+                  {post.member_id !== '' && post.company_id === '' && (
+                    <div>
+                      <Label className="text-gray-300">Member</Label>
+                      <Select value={post.member_id === 'placeholder' ? '' : post.member_id} onValueChange={(value) => updateLinkedInData(index, 'member_id', value)}>
+                        <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                          <SelectValue placeholder="Select member" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-600">
+                          {members.map((member) => (
+                            <SelectItem key={member.id} value={member.id} className="text-white hover:bg-gray-700">
+                              {member.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
                 
                 <div>
