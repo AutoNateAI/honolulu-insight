@@ -555,7 +555,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
           {/* Events Tab */}
           <TabsContent value="events" className="overflow-y-auto max-h-[50vh] space-y-4">
             {eventData.map((event, index) => (
-              <div key={`event-${index}-${event.name}`} className="bg-gray-800 rounded-lg p-4 space-y-4 border border-gray-600">
+              <div key={`event-${index}`} className="bg-gray-800 rounded-lg p-4 space-y-4 border border-gray-600">
                 <div className="flex justify-between items-center">
                   <Label className="text-white font-semibold">Event {index + 1}</Label>
                   {eventData.length > 1 && (
