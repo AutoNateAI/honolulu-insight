@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           company_size: string | null
           created_at: string
+          employee_count: number | null
           engagement_level: string | null
           id: string
           industry_id: string | null
@@ -31,6 +32,7 @@ export type Database = {
         Insert: {
           company_size?: string | null
           created_at?: string
+          employee_count?: number | null
           engagement_level?: string | null
           id?: string
           industry_id?: string | null
@@ -44,6 +46,7 @@ export type Database = {
         Update: {
           company_size?: string | null
           created_at?: string
+          employee_count?: number | null
           engagement_level?: string | null
           id?: string
           industry_id?: string | null

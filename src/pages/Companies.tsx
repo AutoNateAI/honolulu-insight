@@ -18,9 +18,11 @@ import {
   Download,
   Upload,
   Linkedin,
-  ExternalLink
+  ExternalLink,
+  Edit
 } from 'lucide-react';
 import { BulkUploadDialog } from '@/components/BulkUploadDialog';
+import { EditCompanyDialog } from '@/components/EditCompanyDialog';
 
 interface Company {
   id: string;
@@ -32,6 +34,7 @@ interface Company {
   member_count: number;
   engagement_level: string;
   company_size?: string;
+  employee_count?: number;
   created_at: string;
   industries?: {
     name: string;
@@ -68,6 +71,7 @@ const Companies = () => {
   const [postsLoading, setPostsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const [editCompanyOpen, setEditCompanyOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -255,7 +259,7 @@ const Companies = () => {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-white">Companies ({filteredCompanies.length})</h2>
           
-          <div className="space-y-3 max-h-[600px] overflow-y-auto">
+          <div className="space-y-3 max-h-[600px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {filteredCompanies.map((company) => (
               <Card 
                 key={company.id} 
@@ -358,6 +362,15 @@ const Companies = () => {
                   </div>
                   
                   <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+                      onClick={() => setEditCompanyOpen(true)}
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
+                    </Button>
                     {selectedCompany.website && (
                       <Button
                         variant="outline"
@@ -375,6 +388,10 @@ const Companies = () => {
                 {/* Company Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                   <div className="bg-white/5 rounded-lg p-3">
+                    <div className="text-2xl font-bold text-white">{selectedCompany.employee_count || 0}</div>
+                    <div className="text-sm text-white/70">Total Employees</div>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-3">
                     <div className="text-2xl font-bold text-white">{selectedCompany.member_count}</div>
                     <div className="text-sm text-white/70">HTW Members</div>
                   </div>
@@ -382,12 +399,6 @@ const Companies = () => {
                     <div className="text-lg font-semibold text-white">{selectedCompany.engagement_level}</div>
                     <div className="text-sm text-white/70">Engagement</div>
                   </div>
-                  {selectedCompany.company_size && (
-                    <div className="bg-white/5 rounded-lg p-3">
-                      <div className="text-lg font-semibold text-white">{selectedCompany.company_size}</div>
-                      <div className="text-sm text-white/70">Company Size</div>
-                    </div>
-                  )}
                   {selectedCompany.island && (
                     <div className="bg-white/5 rounded-lg p-3">
                       <div className="text-lg font-semibold text-white">{selectedCompany.island}</div>
@@ -416,7 +427,7 @@ const Companies = () => {
                         ))}
                       </div>
                     ) : companyMembers.length > 0 ? (
-                      <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                      <div className="space-y-3 max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {companyMembers.map((member) => (
                           <Card key={member.id} className="bg-white/5 border-white/10">
                             <CardContent className="p-4">
@@ -540,8 +551,15 @@ const Companies = () => {
       </div>
 
       <BulkUploadDialog 
-        open={bulkUploadOpen}
+        open={bulkUploadOpen} 
         onOpenChange={setBulkUploadOpen}
+        onSuccess={fetchCompanies}
+      />
+      
+      <EditCompanyDialog
+        company={selectedCompany}
+        open={editCompanyOpen}
+        onOpenChange={setEditCompanyOpen}
         onSuccess={fetchCompanies}
       />
     </div>

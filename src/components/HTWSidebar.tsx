@@ -127,7 +127,7 @@ export function HTWSidebar() {
         </div>
       </div>
 
-      <SidebarContent className="px-2 py-4">
+      <SidebarContent className="px-2 py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <SidebarGroup>
           <SidebarGroupLabel className="text-white/60 text-xs font-medium uppercase tracking-wider px-3 pb-2">
             {!isCollapsed && "Navigation"}
