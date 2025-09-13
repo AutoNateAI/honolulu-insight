@@ -592,20 +592,37 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                   </div>
                   <div>
                     <Label className="text-gray-300">Event Type</Label>
-                    <Select value={event.event_type} onValueChange={(value) => {
-                      updateEventData(index, 'event_type', value);
-                      if (value === 'htw') {
-                        updateEventData(index, 'company_id', null);
-                      }
-                    }}>
-                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600">
-                        <SelectItem value="company" className="text-white hover:bg-gray-700">Company Event</SelectItem>
-                        <SelectItem value="htw" className="text-white hover:bg-gray-700">HTW Event</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex gap-4 mt-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`eventType-${index}`}
+                          value="company"
+                          checked={event.event_type === 'company'}
+                          onChange={(e) => {
+                            updateEventData(index, 'event_type', e.target.value);
+                          }}
+                          className="text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-300">Company Event</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`eventType-${index}`}
+                          value="htw"
+                          checked={event.event_type === 'htw'}
+                          onChange={(e) => {
+                            updateEventData(index, 'event_type', e.target.value);
+                            if (e.target.value === 'htw') {
+                              updateEventData(index, 'company_id', null);
+                            }
+                          }}
+                          className="text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-300">HTW Event</span>
+                      </label>
+                    </div>
                   </div>
                   {event.event_type === 'company' && (
                     <div>
