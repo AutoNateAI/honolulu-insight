@@ -230,11 +230,9 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
   };
 
   const updateEventData = (index: number, field: keyof Event, value: string | string[] | number | null) => {
-    console.log('Updating event data:', { index, field, value, currentValue: eventData[index][field] });
     const updated = [...eventData];
     updated[index] = { ...updated[index], [field]: value };
     setEventData(updated);
-    console.log('Updated event data:', updated[index]);
   };
 
   const addLinkedInRow = () => {
@@ -595,14 +593,13 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                   <div>
                     <Label className="text-gray-300">Event Type</Label>
                      <Select 
-                       key={`event-type-${index}`}
+                       key={`event-type-${index}-${event.event_type}`}
                        value={event.event_type} 
                        onValueChange={(value) => {
-                         console.log('Select value changed:', value, 'for index:', index);
                          updateEventData(index, 'event_type', value);
                          // Reset company_id when switching to HTW event
                          if (value === 'htw') {
-                           updateEventData(index, 'company_id', null);
+                           setTimeout(() => updateEventData(index, 'company_id', null), 0);
                          }
                        }}
                      >
