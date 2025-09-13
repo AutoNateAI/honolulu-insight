@@ -142,12 +142,12 @@ export function IndustryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] glass-card border-white/20">
+      <DialogContent className="sm:max-w-[500px] glass-card border-white/20 bg-gradient-to-br from-ocean-primary/80 via-sunset-primary/70 to-tropical-primary/80 backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle className="text-white">
+          <DialogTitle className="text-white text-xl font-bold">
             {mode === 'add' ? 'Add New Industry' : 'Edit Industry'}
           </DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogDescription className="text-white/90">
             {mode === 'add' 
               ? 'Create a new industry category for the HTW network.'
               : 'Update the industry information.'
@@ -158,29 +158,29 @@ export function IndustryDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-white/90">Industry Name</Label>
+              <Label htmlFor="name" className="text-white font-semibold">Industry Name</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g., Technology"
                 required
-                className="glass-input"
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white/50"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="icon" className="text-white/90">Icon</Label>
+              <Label htmlFor="icon" className="text-white font-semibold">Icon</Label>
               <Select
                 value={formData.icon}
                 onValueChange={(value) => setFormData({ ...formData, icon: value })}
               >
-                <SelectTrigger className="glass-input">
+                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
+                <SelectContent className="bg-white border border-gray-200 shadow-xl">
                   {industryIcons.map((icon) => (
-                    <SelectItem key={icon.value} value={icon.value}>
+                    <SelectItem key={icon.value} value={icon.value} className="text-gray-900">
                       {icon.label}
                     </SelectItem>
                   ))}
@@ -190,66 +190,66 @@ export function IndustryDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-white/90">Description</Label>
+            <Label htmlFor="description" className="text-white font-semibold">Description</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Brief description of the industry"
-              className="glass-input min-h-20"
+              className="bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white/50 min-h-20"
             />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="members" className="text-white/90">Members</Label>
+              <Label htmlFor="members" className="text-white font-semibold">Members</Label>
               <Input
                 id="members"
                 type="number"
                 value={formData.member_count}
                 onChange={(e) => setFormData({ ...formData, member_count: parseInt(e.target.value) || 0 })}
                 min="0"
-                className="glass-input"
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white/50"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="companies" className="text-white/90">Companies</Label>
+              <Label htmlFor="companies" className="text-white font-semibold">Companies</Label>
               <Input
                 id="companies"
                 type="number"
                 value={formData.company_count}
                 onChange={(e) => setFormData({ ...formData, company_count: parseInt(e.target.value) || 0 })}
                 min="0"
-                className="glass-input"
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white/50"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="growth" className="text-white/90">Growth %</Label>
+              <Label htmlFor="growth" className="text-white font-semibold">Growth %</Label>
               <Input
                 id="growth"
                 type="number"
                 step="0.1"
                 value={formData.growth_rate}
                 onChange={(e) => setFormData({ ...formData, growth_rate: parseFloat(e.target.value) || 0 })}
-                className="glass-input"
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white/50"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-white/90">Color</Label>
-            <div className="flex flex-wrap gap-2">
+          <div className="space-y-3">
+            <Label className="text-white font-semibold">Color Theme</Label>
+            <div className="flex flex-wrap gap-3 p-3 bg-white/10 rounded-lg border border-white/20">
               {industryColors.map((color) => (
                 <button
                   key={color}
                   type="button"
                   onClick={() => setFormData({ ...formData, color })}
-                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                  className={`w-10 h-10 rounded-full border-3 transition-all hover:scale-110 ${
                     formData.color === color 
-                      ? 'border-white scale-110' 
-                      : 'border-white/30 hover:border-white/60'
+                      ? 'border-white shadow-lg shadow-white/30 scale-110' 
+                      : 'border-white/40 hover:border-white/70'
                   }`}
                   style={{ backgroundColor: color }}
                 />
@@ -257,19 +257,19 @@ export function IndustryDialog({
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:border-white/50"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={loading || !formData.name.trim()}
-              className="bg-gradient-to-r from-ocean-primary to-sunset-primary text-white"
+              className="bg-white text-gray-900 hover:bg-white/90 font-semibold"
             >
               {loading ? (
                 <>
