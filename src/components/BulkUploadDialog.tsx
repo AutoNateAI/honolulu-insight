@@ -592,19 +592,20 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
                   </div>
                   <div>
                     <Label className="text-gray-300">Event Type</Label>
-                    <select
-                      value={event.event_type}
-                      onChange={(e) => {
-                        updateEventData(index, 'event_type', e.target.value);
-                        if (e.target.value === 'htw') {
-                          updateEventData(index, 'company_id', null);
-                        }
-                      }}
-                      className="w-full bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="company">Company Event</option>
-                      <option value="htw">HTW Event</option>
-                    </select>
+                    <Select value={event.event_type} onValueChange={(value) => {
+                      updateEventData(index, 'event_type', value);
+                      if (value === 'htw') {
+                        updateEventData(index, 'company_id', null);
+                      }
+                    }}>
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="company" className="text-white hover:bg-gray-700">Company Event</SelectItem>
+                        <SelectItem value="htw" className="text-white hover:bg-gray-700">HTW Event</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   {event.event_type === 'company' && (
                     <div>
