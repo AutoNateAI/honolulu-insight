@@ -4,8 +4,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, TrendingUp, Building, Users, Download } from 'lucide-react';
+import { 
+  Search, 
+  TrendingUp, 
+  Building, 
+  Users, 
+  Download, 
+  Plus,
+  Upload,
+  Edit,
+  Trash2,
+  MoreVertical
+} from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { IndustryDialog } from '@/components/IndustryDialog';
+import { BulkUploadDialog } from '@/components/BulkUploadDialog';
+import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface Industry {
   id: string;
@@ -19,9 +49,16 @@ interface Industry {
 }
 
 export default function Industries() {
+  const { toast } = useToast();
   const [industries, setIndustries] = useState<Industry[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(null);
+  const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [industryToDelete, setIndustryToDelete] = useState<Industry | null>(null);
 
   useEffect(() => {
     fetchIndustries();
@@ -40,6 +77,53 @@ export default function Industries() {
       console.error('Error fetching industries:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddIndustry = () => {
+    setSelectedIndustry(null);
+    setDialogMode('add');
+    setDialogOpen(true);
+  };
+
+  const handleEditIndustry = (industry: Industry) => {
+    setSelectedIndustry(industry);
+    setDialogMode('edit');
+    setDialogOpen(true);
+  };
+
+  const handleDeleteIndustry = (industry: Industry) => {
+    setIndustryToDelete(industry);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!industryToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('industries')
+        .delete()
+        .eq('id', industryToDelete.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Industry deleted successfully.",
+      });
+
+      fetchIndustries();
+    } catch (error) {
+      console.error('Error deleting industry:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete industry. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setIndustryToDelete(null);
     }
   };
 
@@ -70,6 +154,21 @@ export default function Industries() {
               className="pl-9 w-64"
             />
           </div>
+          <Button 
+            onClick={handleAddIndustry}
+            className="bg-gradient-to-r from-ocean-primary to-sunset-primary text-white flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add Industry
+          </Button>
+          <Button 
+            onClick={() => setBulkUploadOpen(true)}
+            variant="outline" 
+            className="flex items-center gap-2"
+          >
+            <Upload className="h-4 w-4" />
+            Bulk Upload
+          </Button>
           <Button variant="outline" className="flex items-center gap-2">
             <Download className="h-4 w-4" />
             Export
@@ -137,21 +236,51 @@ export default function Industries() {
           filteredIndustries.map((industry) => (
             <Card 
               key={industry.id} 
-              className="glass-card border-white/20 hover:scale-105 transition-all duration-200 cursor-pointer group"
+              className="glass-card border-white/20 hover:scale-105 transition-all duration-200 group"
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <div className="text-2xl">{industry.icon}</div>
-                  <Badge 
-                    variant={industry.growth_rate > 10 ? "default" : industry.growth_rate > 5 ? "secondary" : "outline"}
-                    className="text-xs"
-                  >
-                    {industry.growth_rate > 0 ? '+' : ''}{industry.growth_rate}%
-                  </Badge>
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">{industry.icon}</div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg group-hover:text-ocean-primary transition-colors">
+                        {industry.name}
+                      </CardTitle>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      variant={industry.growth_rate > 10 ? "default" : industry.growth_rate > 5 ? "secondary" : "outline"}
+                      className="text-xs"
+                    >
+                      {industry.growth_rate > 0 ? '+' : ''}{industry.growth_rate}%
+                    </Badge>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-white">
+                        <DropdownMenuItem onClick={() => handleEditIndustry(industry)}>
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => handleDeleteIndustry(industry)}
+                          className="text-red-600"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
-                <CardTitle className="text-lg group-hover:text-ocean-primary transition-colors">
-                  {industry.name}
-                </CardTitle>
                 <CardDescription className="text-sm">
                   {industry.description}
                 </CardDescription>
@@ -196,6 +325,43 @@ export default function Industries() {
           </CardContent>
         </Card>
       )}
+
+      {/* Dialogs */}
+      <IndustryDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        industry={selectedIndustry}
+        onSuccess={fetchIndustries}
+        mode={dialogMode}
+      />
+
+      <BulkUploadDialog
+        open={bulkUploadOpen}
+        onOpenChange={setBulkUploadOpen}
+        onSuccess={fetchIndustries}
+      />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="glass-card border-white/20">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Industry</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/70">
+              Are you sure you want to delete "{industryToDelete?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
