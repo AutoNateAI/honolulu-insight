@@ -212,7 +212,7 @@ export function BulkUploadDialog({ open, onOpenChange, onSuccess }: BulkUploadDi
     setEventData([...eventData, {
       name: '',
       description: '',
-      event_type: 'company',
+      event_type: 'htw',
       company_id: null,
       organizer_name: '',
       organizer_email: '',
