@@ -105,6 +105,11 @@ export default function Analytics() {
     return growth > 0 ? TrendingUp : TrendingDown;
   };
 
+  const renderGrowthIcon = (growth: number, className: string) => {
+    const IconComponent = getGrowthIcon(growth);
+    return <IconComponent className={className} />;
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -163,9 +168,7 @@ export default function Analytics() {
                     <p className="text-sm text-muted-foreground">Total Members</p>
                     <p className="text-2xl font-bold">{analytics.totalMembers.toLocaleString()}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      {getGrowthIcon(analytics.memberGrowth)({ 
-                        className: `h-3 w-3 ${getGrowthColor(analytics.memberGrowth)}` 
-                      })}
+                      {renderGrowthIcon(analytics.memberGrowth, `h-3 w-3 ${getGrowthColor(analytics.memberGrowth)}`)}
                       <span className={`text-xs ${getGrowthColor(analytics.memberGrowth)}`}>
                         {analytics.memberGrowth > 0 ? '+' : ''}{analytics.memberGrowth.toFixed(1)}%
                       </span>
@@ -183,9 +186,7 @@ export default function Analytics() {
                     <p className="text-sm text-muted-foreground">Companies</p>
                     <p className="text-2xl font-bold">{analytics.totalCompanies.toLocaleString()}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      {getGrowthIcon(analytics.companyGrowth)({ 
-                        className: `h-3 w-3 ${getGrowthColor(analytics.companyGrowth)}` 
-                      })}
+                      {renderGrowthIcon(analytics.companyGrowth, `h-3 w-3 ${getGrowthColor(analytics.companyGrowth)}`)}
                       <span className={`text-xs ${getGrowthColor(analytics.companyGrowth)}`}>
                         {analytics.companyGrowth > 0 ? '+' : ''}{analytics.companyGrowth.toFixed(1)}%
                       </span>
@@ -313,9 +314,7 @@ export default function Analytics() {
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
-                            {getGrowthIcon(industry.growth_rate)({ 
-                              className: `h-4 w-4 ${getGrowthColor(industry.growth_rate)}` 
-                            })}
+                            {renderGrowthIcon(industry.growth_rate, `h-4 w-4 ${getGrowthColor(industry.growth_rate)}`)}
                             <span className={`font-semibold ${getGrowthColor(industry.growth_rate)}`}>
                               {industry.growth_rate > 0 ? '+' : ''}{industry.growth_rate.toFixed(1)}%
                             </span>
