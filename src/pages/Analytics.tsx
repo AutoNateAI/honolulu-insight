@@ -165,8 +165,8 @@ export default function Analytics() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Members</p>
-                <p className="text-2xl font-bold">{analytics.totalMembers.toLocaleString()}</p>
+                <p className="text-sm text-white/70">Total Members</p>
+                <p className="text-2xl font-bold text-white">{analytics.totalMembers.toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-1">
                   {renderGrowthIcon(analytics.memberGrowth, `h-3 w-3 ${getGrowthColor(analytics.memberGrowth)}`)}
                   <span className={`text-xs ${getGrowthColor(analytics.memberGrowth)}`}>
@@ -183,8 +183,8 @@ export default function Analytics() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Companies</p>
-                <p className="text-2xl font-bold">{analytics.totalCompanies.toLocaleString()}</p>
+                <p className="text-sm text-white/70">Companies</p>
+                <p className="text-2xl font-bold text-white">{analytics.totalCompanies.toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-1">
                   {renderGrowthIcon(analytics.companyGrowth, `h-3 w-3 ${getGrowthColor(analytics.companyGrowth)}`)}
                   <span className={`text-xs ${getGrowthColor(analytics.companyGrowth)}`}>
@@ -201,9 +201,9 @@ export default function Analytics() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Industries</p>
-                <p className="text-2xl font-bold">{analytics.totalIndustries}</p>
-                <p className="text-xs text-muted-foreground mt-1">Active sectors</p>
+                <p className="text-sm text-white/70">Industries</p>
+                <p className="text-2xl font-bold text-white">{analytics.totalIndustries}</p>
+                <p className="text-xs text-white/60 mt-1">Active sectors</p>
               </div>
               <Target className="h-8 w-8 text-tropical-primary" />
             </div>
@@ -214,9 +214,9 @@ export default function Analytics() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Growth</p>
-                <p className="text-2xl font-bold">{analytics.memberGrowth.toFixed(1)}%</p>
-                <p className="text-xs text-muted-foreground mt-1">This quarter</p>
+                <p className="text-sm text-white/70">Avg Growth</p>
+                <p className="text-2xl font-bold text-white">{analytics.memberGrowth.toFixed(1)}%</p>
+                <p className="text-xs text-white/60 mt-1">This quarter</p>
               </div>
               <TrendingUp className="h-8 w-8 text-plumeria-primary" />
             </div>
@@ -250,7 +250,7 @@ export default function Analytics() {
                       <PieChart className="h-5 w-5" />
                       Industry Distribution
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-white/70">
                       Member distribution across top industries
                     </CardDescription>
                   </CardHeader>
@@ -259,8 +259,8 @@ export default function Analytics() {
                       {analytics.topIndustries.map((industry, index) => (
                         <div key={index} className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{industry.name}</span>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm font-medium text-white">{industry.name}</span>
+                            <span className="text-sm text-white/70">
                               {industry.member_count.toLocaleString()}
                             </span>
                           </div>
@@ -274,7 +274,7 @@ export default function Analytics() {
                             />
                           </div>
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground">
+                            <span className="text-white/70">
                               {((industry.member_count / analytics.totalMembers) * 100).toFixed(1)}%
                             </span>
                             <Badge 
@@ -297,7 +297,7 @@ export default function Analytics() {
                       <TrendingUp className="h-5 w-5" />
                       Growth Analysis
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-white/70">
                       Industry growth rates and trends
                     </CardDescription>
                   </CardHeader>
@@ -308,8 +308,8 @@ export default function Analytics() {
                         .map((industry, index) => (
                         <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                           <div>
-                            <p className="font-medium">{industry.name}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="font-medium text-white">{industry.name}</p>
+                            <p className="text-sm text-white/70">
                               {industry.member_count.toLocaleString()} members
                             </p>
                           </div>
@@ -334,7 +334,7 @@ export default function Analytics() {
                     <BarChart3 className="h-5 w-5" />
                     Geographic Distribution
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-white/70">
                     Member distribution across Hawaiian Islands
                   </CardDescription>
                 </CardHeader>
@@ -345,11 +345,11 @@ export default function Analytics() {
                         <div className="text-2xl mb-2">
                           {index === 0 ? '🏙️' : index === 1 ? '🌋' : index === 2 ? '🏞️' : index === 3 ? '🌿' : '🏝️'}
                         </div>
-                        <p className="font-semibold">{island.name}</p>
+                        <p className="font-semibold text-white">{island.name}</p>
                         <p className="text-xl font-bold text-ocean-primary">
                           {island.member_count.toLocaleString()}
                         </p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-white/70">
                           {island.percentage.toFixed(1)}% of network
                         </p>
                       </div>
@@ -366,7 +366,7 @@ export default function Analytics() {
                     <LineChart className="h-5 w-5" />
                     Growth Trends
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-white/70">
                     Network growth and expansion opportunities
                   </CardDescription>
                 </CardHeader>
@@ -374,8 +374,8 @@ export default function Analytics() {
                   <div className="text-center py-16 space-y-4">
                     <div className="text-6xl">📈</div>
                     <div>
-                      <p className="text-lg font-semibold">Advanced Charts Coming Soon</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-lg font-semibold text-white">Advanced Charts Coming Soon</p>
+                      <p className="text-sm text-white/70">
                         Interactive time-series charts and trend analysis
                       </p>
                     </div>

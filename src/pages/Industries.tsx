@@ -183,8 +183,8 @@ export default function Industries() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Members</p>
-                <p className="text-2xl font-bold">{totalMembers.toLocaleString()}</p>
+                <p className="text-sm text-white/70">Total Members</p>
+                <p className="text-2xl font-bold text-white">{totalMembers.toLocaleString()}</p>
               </div>
               <Users className="h-8 w-8 text-ocean-primary" />
             </div>
@@ -195,8 +195,8 @@ export default function Industries() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Companies</p>
-                <p className="text-2xl font-bold">{totalCompanies.toLocaleString()}</p>
+                <p className="text-sm text-white/70">Total Companies</p>
+                <p className="text-2xl font-bold text-white">{totalCompanies.toLocaleString()}</p>
               </div>
               <Building className="h-8 w-8 text-sunset-primary" />
             </div>
@@ -207,8 +207,8 @@ export default function Industries() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active Industries</p>
-                <p className="text-2xl font-bold">{industries.length}</p>
+                <p className="text-sm text-white/70">Active Industries</p>
+                <p className="text-2xl font-bold text-white">{industries.length}</p>
               </div>
               <TrendingUp className="h-8 w-8 text-tropical-primary" />
             </div>
@@ -244,7 +244,7 @@ export default function Industries() {
                   <div className="flex items-center gap-3">
                     <div className="text-2xl">{industry.icon}</div>
                     <div className="flex-1">
-                      <CardTitle className="text-lg group-hover:text-ocean-primary transition-colors">
+                      <CardTitle className="text-lg text-white group-hover:text-ocean-primary transition-colors">
                         {industry.name}
                       </CardTitle>
                     </div>
@@ -282,7 +282,7 @@ export default function Industries() {
                     </DropdownMenu>
                   </div>
                 </div>
-                <CardDescription className="text-sm">
+                <CardDescription className="text-sm text-white/70">
                   {industry.description}
                 </CardDescription>
               </CardHeader>
@@ -290,12 +290,12 @@ export default function Industries() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Members</span>
-                    <span className="font-semibold">{industry.member_count.toLocaleString()}</span>
+                    <span className="text-white/70">Members</span>
+                    <span className="font-semibold text-white">{industry.member_count.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Companies</span>
-                    <span className="font-semibold">{industry.company_count.toLocaleString()}</span>
+                    <span className="text-white/70">Companies</span>
+                    <span className="font-semibold text-white">{industry.company_count.toLocaleString()}</span>
                   </div>
                   <div 
                     className="h-1 rounded-full"
@@ -322,7 +322,7 @@ export default function Industries() {
       {filteredIndustries.length === 0 && !loading && (
         <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">No industries found matching your search.</p>
+            <p className="text-white/70">No industries found matching your search.</p>
           </CardContent>
         </Card>
       )}

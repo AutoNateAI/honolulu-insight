@@ -138,7 +138,7 @@ const MapControl: React.FC<MapControlProps> = ({
 
   return (
     <div className="absolute top-4 left-4 w-80 max-h-[calc(100vh-2rem)] z-50 pointer-events-auto">
-      <Card className="glass-card border-white/20 backdrop-blur-xl shadow-2xl">
+      <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent shadow-2xl">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg text-white flex items-center gap-2">
