@@ -16,7 +16,6 @@ import {
   PieChart,
   LineChart,
   Activity,
-  MapPin,
   Briefcase
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -399,10 +398,6 @@ export default function Analytics() {
                 <Activity className="h-4 w-4" />
                 Engagement
               </TabsTrigger>
-              <TabsTrigger value="geography" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                <MapPin className="h-4 w-4" />
-                Geography
-              </TabsTrigger>
               <TabsTrigger value="events" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                 <Calendar className="h-4 w-4" />
                 Events
@@ -572,81 +567,6 @@ export default function Analytics() {
               </div>
             </TabsContent>
 
-            <TabsContent value="geography" className="space-y-6">
-              <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5" />
-                    Geographic Distribution
-                  </CardTitle>
-                  <CardDescription className="text-white/70">
-                    Member distribution across Hawaiian Islands
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {analytics.islandDistribution.map((island, index) => (
-                        <div key={index} className="text-center p-4 rounded-lg bg-white/5">
-                          <div className="text-2xl mb-2">
-                            {index === 0 ? '🏙️' : index === 1 ? '🌋' : index === 2 ? '🏞️' : index === 3 ? '🌿' : '🏝️'}
-                          </div>
-                          <p className="font-semibold text-white">{island.name}</p>
-                          <div className="space-y-1">
-                            <p className="text-xl font-bold text-ocean-primary">
-                              {island.member_count.toLocaleString()}
-                            </p>
-                            <p className="text-sm text-white/70">members</p>
-                            <p className="text-lg font-semibold text-sunset-primary">
-                              {island.company_count?.toLocaleString() || 0}
-                            </p>
-                            <p className="text-sm text-white/70">companies</p>
-                            <p className="text-xs text-white/60">
-                              {island.percentage.toFixed(1)}% of network
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Island Distribution Chart */}
-                    <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
-                      <CardHeader>
-                        <CardTitle>Geographic Distribution Chart</CardTitle>
-                        <CardDescription className="text-white/70">
-                          Member and company distribution across islands
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="h-64">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={analytics.islandDistribution}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                              <XAxis 
-                                dataKey="name" 
-                                stroke="rgba(255,255,255,0.7)"
-                                fontSize={12}
-                              />
-                              <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
-                              <Tooltip 
-                                contentStyle={{
-                                  backgroundColor: 'rgba(0,0,0,0.8)',
-                                  border: '1px solid rgba(255,255,255,0.2)',
-                                  borderRadius: '8px',
-                                  color: 'white'
-                                }}
-                              />
-                              <Bar dataKey="member_count" fill="#22d3ee" name="Members" />
-                              <Bar dataKey="company_count" fill="#f97316" name="Companies" />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
 
             <TabsContent value="events" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

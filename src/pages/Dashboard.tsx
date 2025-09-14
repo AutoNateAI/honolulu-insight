@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, 
   Building2, 
-  MapPin, 
   TrendingUp,
   Target,
   Award
@@ -133,7 +132,7 @@ export function Dashboard() {
         <StatsCard
           title="Hawaiian Islands"
           value={dashboardData.islandData.length}
-          icon={MapPin}
+          icon={TrendingUp}
           variant="tropical"
           description="Complete coverage"
         />
@@ -195,80 +194,49 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Island Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="glass-card p-6">
-          <h3 className="text-xl font-poppins font-bold text-foreground mb-4">
-            Geographic Distribution
-          </h3>
-          <div className="space-y-4">
-            {dashboardData.islandData.map((island) => (
-              <div key={island.name} className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-ocean-primary/20 flex items-center justify-center">
-                    <MapPin className="h-5 w-5 text-ocean-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-white">{island.name}</h4>
-                    <p className="text-sm text-white/70">
-                      {island.company_count || 0} companies
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-lg font-bold font-poppins text-ocean-primary">
-                    {island.member_count?.toLocaleString() || '0'}
-                  </p>
-                  <p className="text-xs text-white/70">members</p>
-                </div>
-              </div>
-            ))}
+      {/* Growth Highlights */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-poppins font-bold text-foreground mb-4">
+          Growth Highlights
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 rounded-xl bg-tropical-light/10 border border-tropical-light/20">
+            <div className="flex items-center gap-3 mb-2">
+              <Award className="h-5 w-5 text-tropical-light" />
+              <span className="font-medium text-white">Fastest Growing</span>
+            </div>
+            <p className="text-lg font-poppins font-bold text-tropical-light">
+              {dashboardData.topGrowthIndustry.name || 'Technology'}
+            </p>
+            <p className="text-sm text-white/70">
+              {dashboardData.topGrowthIndustry.growthRate.toFixed(1)}% quarterly growth
+            </p>
           </div>
-        </div>
 
-        <div className="glass-card p-6">
-          <h3 className="text-xl font-poppins font-bold text-foreground mb-4">
-            Growth Highlights
-          </h3>
-          <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-tropical-light/10 border border-tropical-light/20">
-              <div className="flex items-center gap-3 mb-2">
-                <Award className="h-5 w-5 text-tropical-light" />
-                <span className="font-medium text-white">Fastest Growing</span>
-              </div>
-              <p className="text-lg font-poppins font-bold text-tropical-light">
-                {dashboardData.topGrowthIndustry.name || 'Technology'}
-              </p>
-              <p className="text-sm text-white/70">
-                {dashboardData.topGrowthIndustry.growthRate.toFixed(1)}% quarterly growth
-              </p>
+          <div className="p-4 rounded-xl bg-sunset-coral/10 border border-sunset-coral/20">
+            <div className="flex items-center gap-3 mb-2">
+              <Target className="h-5 w-5 text-sunset-coral" />
+              <span className="font-medium text-white">Total Industries</span>
             </div>
+            <p className="text-lg font-poppins font-bold text-sunset-coral">
+              {dashboardData.totalIndustries}
+            </p>
+            <p className="text-sm text-white/70">
+              Active sectors tracked
+            </p>
+          </div>
 
-            <div className="p-4 rounded-xl bg-sunset-coral/10 border border-sunset-coral/20">
-              <div className="flex items-center gap-3 mb-2">
-                <Target className="h-5 w-5 text-sunset-coral" />
-                <span className="font-medium text-white">Total Industries</span>
-              </div>
-              <p className="text-lg font-poppins font-bold text-sunset-coral">
-                {dashboardData.totalIndustries}
-              </p>
-              <p className="text-sm text-white/70">
-                Active sectors tracked
-              </p>
+          <div className="p-4 rounded-xl bg-plumeria-light/10 border border-plumeria-light/20">
+            <div className="flex items-center gap-3 mb-2">
+              <TrendingUp className="h-5 w-5 text-plumeria-light" />
+              <span className="font-medium text-white">Network Growth</span>
             </div>
-
-            <div className="p-4 rounded-xl bg-plumeria-light/10 border border-plumeria-light/20">
-              <div className="flex items-center gap-3 mb-2">
-                <TrendingUp className="h-5 w-5 text-plumeria-light" />
-                <span className="font-medium text-white">Network Growth</span>
-              </div>
-              <p className="text-lg font-poppins font-bold text-plumeria-light">
-                {((dashboardData.totalMembers / Math.max(dashboardData.totalCompanies, 1)) || 0).toFixed(1)}
-              </p>
-              <p className="text-sm text-white/70">
-                Avg members per company
-              </p>
-            </div>
+            <p className="text-lg font-poppins font-bold text-plumeria-light">
+              {((dashboardData.totalMembers / Math.max(dashboardData.totalCompanies, 1)) || 0).toFixed(1)}
+            </p>
+            <p className="text-sm text-white/70">
+              Avg members per company
+            </p>
           </div>
         </div>
       </div>
