@@ -385,7 +385,7 @@ const Map: React.FC<MapProps> = ({ className = "" }) => {
       {/* Company Details Panel */}
       {selectedCompany && (
         <div className="absolute top-4 right-4 w-96 max-h-[calc(100%-2rem)] overflow-y-auto pointer-events-auto z-50">
-          <Card className="glass-card border-white/20 shadow-2xl">
+          <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent shadow-2xl">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
