@@ -14,26 +14,54 @@ import {
   Download,
   Target,
   PieChart,
-  LineChart
+  LineChart,
+  Activity,
+  MapPin,
+  Briefcase
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell } from 'recharts';
 
 interface AnalyticsData {
   totalMembers: number;
   totalCompanies: number;
   totalIndustries: number;
+  totalEvents: number;
   memberGrowth: number;
   companyGrowth: number;
+  eventGrowth: number;
+  avgEventsPerMember: number;
   topIndustries: Array<{
     name: string;
     member_count: number;
+    company_count: number;
     growth_rate: number;
     color: string;
   }>;
   islandDistribution: Array<{
     name: string;
     member_count: number;
+    company_count: number;
     percentage: number;
+  }>;
+  activityLevels: Array<{
+    level: string;
+    count: number;
+    percentage: number;
+  }>;
+  eventTypes: Array<{
+    type: string;
+    count: number;
+    avg_attendance: number;
+  }>;
+  membershipTrends: Array<{
+    month: string;
+    new_members: number;
+    total_members: number;
+  }>;
+  topSkills: Array<{
+    skill: string;
+    count: number;
   }>;
 }
 
@@ -48,39 +76,157 @@ export default function Analytics() {
 
   const fetchAnalytics = async () => {
     try {
-      // Fetch all required data
-      const [industriesRes, islandsRes] = await Promise.all([
+      // Calculate timeframe boundaries
+      const now = new Date();
+      const timeframes = {
+        monthly: new Date(now.getFullYear(), now.getMonth() - 1, now.getDate()),
+        quarterly: new Date(now.getFullYear(), now.getMonth() - 3, now.getDate()),
+        yearly: new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
+      };
+      
+      const timeframeBoundary = timeframes[selectedTimeframe as keyof typeof timeframes];
+
+      // Fetch all required data in parallel
+      const [
+        industriesRes,
+        islandsRes,
+        membersRes,
+        companiesRes,
+        eventsRes,
+        eventAttendeesRes
+      ] = await Promise.all([
         supabase.from('industries').select('name, member_count, company_count, growth_rate, color'),
-        supabase.from('island_data').select('name, member_count')
+        supabase.from('island_data').select('name, member_count, company_count'),
+        supabase.from('members').select('activity_level, member_since, created_at, skills, events_attended'),
+        supabase.from('companies').select('created_at, island'),
+        supabase.from('events').select('id, event_type, event_date, attendee_count, created_at'),
+        supabase.from('event_attendees').select('event_id, created_at')
       ]);
 
-      if (industriesRes.error || islandsRes.error) {
-        throw industriesRes.error || islandsRes.error;
+      if (industriesRes.error || islandsRes.error || membersRes.error || companiesRes.error || eventsRes.error) {
+        throw industriesRes.error || islandsRes.error || membersRes.error || companiesRes.error || eventsRes.error;
       }
 
       const industries = industriesRes.data || [];
       const islands = islandsRes.data || [];
+      const members = membersRes.data || [];
+      const companies = companiesRes.data || [];
+      const events = eventsRes.data || [];
+      const eventAttendees = eventAttendeesRes.data || [];
 
-      const totalMembers = industries.reduce((sum, ind) => sum + ind.member_count, 0);
-      const totalCompanies = industries.reduce((sum, ind) => sum + ind.company_count, 0);
-      const avgGrowth = industries.reduce((sum, ind) => sum + ind.growth_rate, 0) / industries.length;
+      // Calculate growth metrics based on actual data
+      const membersInTimeframe = members.filter(m => 
+        new Date(m.member_since || m.created_at) >= timeframeBoundary
+      ).length;
+      const companiesInTimeframe = companies.filter(c => 
+        new Date(c.created_at) >= timeframeBoundary
+      ).length;
+      const eventsInTimeframe = events.filter(e => 
+        new Date(e.created_at) >= timeframeBoundary
+      ).length;
 
+      const memberGrowth = ((membersInTimeframe / Math.max(members.length - membersInTimeframe, 1)) * 100);
+      const companyGrowth = ((companiesInTimeframe / Math.max(companies.length - companiesInTimeframe, 1)) * 100);
+      const eventGrowth = ((eventsInTimeframe / Math.max(events.length - eventsInTimeframe, 1)) * 100);
+
+      // Activity level distribution
+      const activityCounts = members.reduce((acc, member) => {
+        const level = member.activity_level || 'Medium';
+        acc[level] = (acc[level] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      const activityLevels = Object.entries(activityCounts).map(([level, count]) => ({
+        level,
+        count,
+        percentage: (count / members.length) * 100
+      }));
+
+      // Event type analysis
+      const eventTypeCounts = events.reduce((acc, event) => {
+        const type = event.event_type || 'company';
+        if (!acc[type]) {
+          acc[type] = { count: 0, total_attendance: 0 };
+        }
+        acc[type].count += 1;
+        acc[type].total_attendance += event.attendee_count || 0;
+        return acc;
+      }, {} as Record<string, { count: number; total_attendance: number }>);
+
+      const eventTypes = Object.entries(eventTypeCounts).map(([type, data]) => ({
+        type: type.charAt(0).toUpperCase() + type.slice(1),
+        count: data.count,
+        avg_attendance: Math.round(data.total_attendance / data.count) || 0
+      }));
+
+      // Membership trends (last 12 months)
+      const membershipTrends = [];
+      for (let i = 11; i >= 0; i--) {
+        const date = new Date();
+        date.setMonth(date.getMonth() - i);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        
+        const newMembersInMonth = members.filter(m => {
+          const memberDate = new Date(m.member_since || m.created_at);
+          return memberDate.getFullYear() === date.getFullYear() && 
+                 memberDate.getMonth() === date.getMonth();
+        }).length;
+
+        const totalMembersUpToMonth = members.filter(m => {
+          const memberDate = new Date(m.member_since || m.created_at);
+          return memberDate <= date;
+        }).length;
+
+        membershipTrends.push({
+          month: date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
+          new_members: newMembersInMonth,
+          total_members: totalMembersUpToMonth
+        });
+      }
+
+      // Top skills analysis
+      const skillCounts = members.reduce((acc, member) => {
+        if (member.skills && Array.isArray(member.skills)) {
+          member.skills.forEach((skill: string) => {
+            acc[skill] = (acc[skill] || 0) + 1;
+          });
+        }
+        return acc;
+      }, {} as Record<string, number>);
+
+      const topSkills = Object.entries(skillCounts)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 10)
+        .map(([skill, count]) => ({ skill, count }));
+
+      // Enhanced island distribution with company data
       const islandTotal = islands.reduce((sum, island) => sum + island.member_count, 0);
       const islandDistribution = islands.map(island => ({
         ...island,
         percentage: (island.member_count / islandTotal) * 100
-      }));
+      })).sort((a, b) => b.member_count - a.member_count);
+
+      // Calculate average events per member
+      const totalEventsAttended = members.reduce((sum, member) => sum + (member.events_attended || 0), 0);
+      const avgEventsPerMember = totalEventsAttended / members.length || 0;
 
       setAnalytics({
-        totalMembers,
-        totalCompanies,
+        totalMembers: members.length,
+        totalCompanies: companies.length,
         totalIndustries: industries.length,
-        memberGrowth: avgGrowth,
-        companyGrowth: avgGrowth * 0.8, // Estimated company growth
+        totalEvents: events.length,
+        memberGrowth,
+        companyGrowth,
+        eventGrowth,
+        avgEventsPerMember,
         topIndustries: industries
           .sort((a, b) => b.member_count - a.member_count)
-          .slice(0, 5),
-        islandDistribution: islandDistribution.sort((a, b) => b.member_count - a.member_count)
+          .slice(0, 6),
+        islandDistribution,
+        activityLevels,
+        eventTypes,
+        membershipTrends,
+        topSkills
       });
     } catch (error) {
       console.error('Error fetching analytics:', error);
@@ -160,7 +306,7 @@ export default function Analytics() {
       {analytics && (
         <>
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -201,11 +347,16 @@ export default function Analytics() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-white/70">Industries</p>
-                <p className="text-2xl font-bold text-white">{analytics.totalIndustries}</p>
-                <p className="text-xs text-white/60 mt-1">Active sectors</p>
+                <p className="text-sm text-white/70">Events</p>
+                <p className="text-2xl font-bold text-white">{analytics.totalEvents}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  {renderGrowthIcon(analytics.eventGrowth, `h-3 w-3 ${getGrowthColor(analytics.eventGrowth)}`)}
+                  <span className={`text-xs ${getGrowthColor(analytics.eventGrowth)}`}>
+                    {analytics.eventGrowth > 0 ? '+' : ''}{analytics.eventGrowth.toFixed(1)}%
+                  </span>
+                </div>
               </div>
-              <Target className="h-8 w-8 text-tropical-primary" />
+              <Calendar className="h-8 w-8 text-tropical-primary" />
             </div>
           </CardContent>
         </Card>
@@ -214,11 +365,24 @@ export default function Analytics() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-white/70">Avg Growth</p>
-                <p className="text-2xl font-bold text-white">{analytics.memberGrowth.toFixed(1)}%</p>
-                <p className="text-xs text-white/60 mt-1">This quarter</p>
+                <p className="text-sm text-white/70">Industries</p>
+                <p className="text-2xl font-bold text-white">{analytics.totalIndustries}</p>
+                <p className="text-xs text-white/60 mt-1">Active sectors</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-plumeria-primary" />
+              <Target className="h-8 w-8 text-plumeria-primary" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-white/70">Avg Events</p>
+                <p className="text-2xl font-bold text-white">{analytics.avgEventsPerMember.toFixed(1)}</p>
+                <p className="text-xs text-white/60 mt-1">Per member</p>
+              </div>
+              <Activity className="h-8 w-8 text-volcanic-primary" />
             </div>
           </CardContent>
         </Card>
@@ -231,9 +395,17 @@ export default function Analytics() {
                 <PieChart className="h-4 w-4" />
                 Industries
               </TabsTrigger>
+              <TabsTrigger value="engagement" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                <Activity className="h-4 w-4" />
+                Engagement
+              </TabsTrigger>
               <TabsTrigger value="geography" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                <BarChart3 className="h-4 w-4" />
+                <MapPin className="h-4 w-4" />
                 Geography
+              </TabsTrigger>
+              <TabsTrigger value="events" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                <Calendar className="h-4 w-4" />
+                Events
               </TabsTrigger>
               <TabsTrigger value="trends" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                 <LineChart className="h-4 w-4" />
@@ -260,9 +432,14 @@ export default function Analytics() {
                         <div key={index} className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium text-white">{industry.name}</span>
-                            <span className="text-sm text-white/70">
-                              {industry.member_count.toLocaleString()}
-                            </span>
+                            <div className="text-right">
+                              <div className="text-sm text-white/70">
+                                {industry.member_count.toLocaleString()} members
+                              </div>
+                              <div className="text-xs text-white/50">
+                                {industry.company_count} companies
+                              </div>
+                            </div>
                           </div>
                           <div className="w-full bg-white/10 rounded-full h-2">
                             <div 
@@ -275,7 +452,7 @@ export default function Analytics() {
                           </div>
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-white/70">
-                              {((industry.member_count / analytics.totalMembers) * 100).toFixed(1)}%
+                              {((industry.member_count / analytics.totalMembers) * 100).toFixed(1)}% of network
                             </span>
                             <Badge 
                               variant={industry.growth_rate > 10 ? "default" : "secondary"}
@@ -310,7 +487,7 @@ export default function Analytics() {
                           <div>
                             <p className="font-medium text-white">{industry.name}</p>
                             <p className="text-sm text-white/70">
-                              {industry.member_count.toLocaleString()} members
+                              {industry.member_count.toLocaleString()} members • {industry.company_count} companies
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
@@ -319,6 +496,74 @@ export default function Analytics() {
                               {industry.growth_rate > 0 ? '+' : ''}{industry.growth_rate.toFixed(1)}%
                             </span>
                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="engagement" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Activity Level Distribution */}
+                <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="h-5 w-5" />
+                      Activity Levels
+                    </CardTitle>
+                    <CardDescription className="text-white/70">
+                      Member engagement distribution
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {analytics.activityLevels
+                        .sort((a, b) => b.count - a.count)
+                        .map((level, index) => (
+                        <div key={index} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-white capitalize">{level.level}</span>
+                            <span className="text-sm text-white/70">{level.count} members</span>
+                          </div>
+                          <div className="w-full bg-white/10 rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full transition-all duration-500 ${
+                                level.level === 'High' ? 'bg-green-500' :
+                                level.level === 'Medium' ? 'bg-yellow-500' : 'bg-orange-500'
+                              }`}
+                              style={{ width: `${level.percentage}%` }}
+                            />
+                          </div>
+                          <div className="text-xs text-white/70">
+                            {level.percentage.toFixed(1)}% of members
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Top Skills */}
+                <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Briefcase className="h-5 w-5" />
+                      Popular Skills
+                    </CardTitle>
+                    <CardDescription className="text-white/70">
+                      Most common skills in the network
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {analytics.topSkills.slice(0, 8).map((skill, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 rounded bg-white/5">
+                          <span className="text-sm font-medium text-white">{skill.skill}</span>
+                          <Badge variant="secondary" className="text-xs">
+                            {skill.count} members
+                          </Badge>
                         </div>
                       ))}
                     </div>
@@ -339,52 +584,217 @@ export default function Analytics() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {analytics.islandDistribution.map((island, index) => (
-                      <div key={index} className="text-center p-4 rounded-lg bg-white/5">
-                        <div className="text-2xl mb-2">
-                          {index === 0 ? '🏙️' : index === 1 ? '🌋' : index === 2 ? '🏞️' : index === 3 ? '🌿' : '🏝️'}
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {analytics.islandDistribution.map((island, index) => (
+                        <div key={index} className="text-center p-4 rounded-lg bg-white/5">
+                          <div className="text-2xl mb-2">
+                            {index === 0 ? '🏙️' : index === 1 ? '🌋' : index === 2 ? '🏞️' : index === 3 ? '🌿' : '🏝️'}
+                          </div>
+                          <p className="font-semibold text-white">{island.name}</p>
+                          <div className="space-y-1">
+                            <p className="text-xl font-bold text-ocean-primary">
+                              {island.member_count.toLocaleString()}
+                            </p>
+                            <p className="text-sm text-white/70">members</p>
+                            <p className="text-lg font-semibold text-sunset-primary">
+                              {island.company_count?.toLocaleString() || 0}
+                            </p>
+                            <p className="text-sm text-white/70">companies</p>
+                            <p className="text-xs text-white/60">
+                              {island.percentage.toFixed(1)}% of network
+                            </p>
+                          </div>
                         </div>
-                        <p className="font-semibold text-white">{island.name}</p>
-                        <p className="text-xl font-bold text-ocean-primary">
-                          {island.member_count.toLocaleString()}
-                        </p>
-                        <p className="text-sm text-white/70">
-                          {island.percentage.toFixed(1)}% of network
-                        </p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    
+                    {/* Island Distribution Chart */}
+                    <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                      <CardHeader>
+                        <CardTitle>Geographic Distribution Chart</CardTitle>
+                        <CardDescription className="text-white/70">
+                          Member and company distribution across islands
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={analytics.islandDistribution}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                              <XAxis 
+                                dataKey="name" 
+                                stroke="rgba(255,255,255,0.7)"
+                                fontSize={12}
+                              />
+                              <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
+                              <Tooltip 
+                                contentStyle={{
+                                  backgroundColor: 'rgba(0,0,0,0.8)',
+                                  border: '1px solid rgba(255,255,255,0.2)',
+                                  borderRadius: '8px',
+                                  color: 'white'
+                                }}
+                              />
+                              <Bar dataKey="member_count" fill="#22d3ee" name="Members" />
+                              <Bar dataKey="company_count" fill="#f97316" name="Companies" />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="trends" className="space-y-6">
-              <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <LineChart className="h-5 w-5" />
-                    Growth Trends
-                  </CardTitle>
-                  <CardDescription className="text-white/70">
-                    Network growth and expansion opportunities
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-16 space-y-4">
-                    <div className="text-6xl">📈</div>
-                    <div>
-                      <p className="text-lg font-semibold text-white">Advanced Charts Coming Soon</p>
-                      <p className="text-sm text-white/70">
-                        Interactive time-series charts and trend analysis
-                      </p>
+            <TabsContent value="events" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Event Types Analysis */}
+                <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      Event Types
+                    </CardTitle>
+                    <CardDescription className="text-white/70">
+                      Event distribution and average attendance
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {analytics.eventTypes.map((eventType, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                          <div>
+                            <p className="font-medium text-white">{eventType.type}</p>
+                            <p className="text-sm text-white/70">
+                              {eventType.count} events hosted
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-lg font-semibold text-tropical-primary">
+                              {eventType.avg_attendance}
+                            </p>
+                            <p className="text-xs text-white/70">avg attendance</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <Button className="bg-gradient-to-r from-ocean-primary to-sunset-primary text-white">
-                      Enable Advanced Analytics
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+
+                {/* Event Performance Chart */}
+                <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5" />
+                      Event Performance
+                    </CardTitle>
+                    <CardDescription className="text-white/70">
+                      Event types by total count and attendance
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={analytics.eventTypes}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                          <XAxis 
+                            dataKey="type" 
+                            stroke="rgba(255,255,255,0.7)"
+                            fontSize={12}
+                          />
+                          <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
+                          <Tooltip 
+                            contentStyle={{
+                              backgroundColor: 'rgba(0,0,0,0.8)',
+                              border: '1px solid rgba(255,255,255,0.2)',
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                          />
+                          <Bar dataKey="count" fill="#10b981" name="Event Count" />
+                          <Bar dataKey="avg_attendance" fill="#f59e0b" name="Avg Attendance" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="trends" className="space-y-6">
+              <div className="space-y-6">
+                {/* Membership Growth Chart */}
+                <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <LineChart className="h-5 w-5" />
+                      Membership Growth Trends
+                    </CardTitle>
+                    <CardDescription className="text-white/70">
+                      Member acquisition over the last 12 months
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={analytics.membershipTrends}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                          <XAxis 
+                            dataKey="month" 
+                            stroke="rgba(255,255,255,0.7)"
+                            fontSize={12}
+                          />
+                          <YAxis stroke="rgba(255,255,255,0.7)" fontSize={12} />
+                          <Tooltip 
+                            contentStyle={{
+                              backgroundColor: 'rgba(0,0,0,0.8)',
+                              border: '1px solid rgba(255,255,255,0.2)',
+                              borderRadius: '8px',
+                              color: 'white'
+                            }}
+                          />
+                          <Bar dataKey="new_members" fill="#22d3ee" name="New Members" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Growth Summary Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                    <CardContent className="p-6 text-center">
+                      <div className="text-3xl mb-2">👥</div>
+                      <p className="text-2xl font-bold text-white">
+                        {analytics.membershipTrends.slice(-3).reduce((sum, month) => sum + month.new_members, 0)}
+                      </p>
+                      <p className="text-sm text-white/70">New members (3 months)</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                    <CardContent className="p-6 text-center">
+                      <div className="text-3xl mb-2">📈</div>
+                      <p className="text-2xl font-bold text-white">
+                        {analytics.memberGrowth.toFixed(1)}%
+                      </p>
+                      <p className="text-sm text-white/70">Growth rate ({selectedTimeframe})</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
+                    <CardContent className="p-6 text-center">
+                      <div className="text-3xl mb-2">🎯</div>
+                      <p className="text-2xl font-bold text-white">
+                        {Math.round(analytics.membershipTrends.slice(-3).reduce((sum, month) => sum + month.new_members, 0) / 3)}
+                      </p>
+                      <p className="text-sm text-white/70">Avg monthly growth</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </>
