@@ -158,15 +158,15 @@ const MapControl: React.FC<MapControlProps> = ({
 
         <CardContent className="space-y-4">
           {/* Tab Buttons */}
-          <div className="flex space-x-1 bg-white/10 p-1 rounded-lg">
+          <div className="flex space-x-1 bg-white/5 border border-white/10 p-1 rounded-lg backdrop-blur-sm">
             <Button
               variant={activeTab === 'industries' ? 'secondary' : 'ghost'}
               size="sm"
               onClick={() => setActiveTab('industries')}
-              className={`flex-1 text-xs ${
+              className={`flex-1 text-xs transition-all duration-200 ${
                 activeTab === 'industries' 
-                  ? 'bg-white/20 text-white' 
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
+                  ? 'bg-white/30 text-white shadow-lg backdrop-blur-sm border border-white/20' 
+                  : 'text-white/80 hover:text-white hover:bg-white/15'
               }`}
             >
               Industries
@@ -175,10 +175,10 @@ const MapControl: React.FC<MapControlProps> = ({
               variant={activeTab === 'companies' ? 'secondary' : 'ghost'}
               size="sm"
               onClick={() => setActiveTab('companies')}
-              className={`flex-1 text-xs ${
+              className={`flex-1 text-xs transition-all duration-200 ${
                 activeTab === 'companies' 
-                  ? 'bg-white/20 text-white' 
-                  : 'text-white/70 hover:text-white hover:bg-white/10'
+                  ? 'bg-white/30 text-white shadow-lg backdrop-blur-sm border border-white/20' 
+                  : 'text-white/80 hover:text-white hover:bg-white/15'
               }`}
             >
               Companies
@@ -187,19 +187,19 @@ const MapControl: React.FC<MapControlProps> = ({
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/50" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
             <Input
               placeholder={`Search ${activeTab}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/50"
+              className="pl-9 bg-white/10 border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm focus:bg-white/15 focus:border-white/40 transition-all duration-200"
             />
           </div>
 
           {/* Industries Tab */}
           {activeTab === 'industries' && (
             <ScrollArea className="h-64">
-              <div className="space-y-2">
+              <div className="space-y-2 pr-4">
                 {industries
                   .filter(industry => 
                     industry.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -209,10 +209,10 @@ const MapControl: React.FC<MapControlProps> = ({
                       key={industry.id}
                       variant="ghost"
                       onClick={() => handleIndustryClick(industry)}
-                      className={`w-full justify-start p-3 h-auto ${
+                      className={`w-full justify-start p-3 h-auto transition-all duration-200 backdrop-blur-sm ${
                         selectedIndustry === industry.id
-                          ? 'bg-white/20 border border-white/30'
-                          : 'hover:bg-white/10'
+                          ? 'bg-white/25 border border-white/40 shadow-lg text-white'
+                          : 'hover:bg-white/15 text-white/90 hover:text-white border border-transparent hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
@@ -241,13 +241,17 @@ const MapControl: React.FC<MapControlProps> = ({
           {/* Companies Tab */}
           {activeTab === 'companies' && (
             <ScrollArea className="h-64">
-              <div className="space-y-2">
+              <div className="space-y-2 pr-4">
                 {filteredCompanies.map((company) => (
                   <Button
                     key={company.id}
                     variant="ghost"
                     onClick={() => handleCompanyClick(company)}
-                    className="w-full justify-start p-3 h-auto hover:bg-white/10"
+                    className={`w-full justify-start p-3 h-auto transition-all duration-200 backdrop-blur-sm border border-transparent hover:border-white/20 ${
+                      company.coordinates 
+                        ? 'hover:bg-white/15 text-white/90 hover:text-white' 
+                        : 'opacity-60 cursor-not-allowed bg-white/5'
+                    }`}
                     disabled={!company.coordinates}
                   >
                     <div className="flex items-center justify-between w-full">
@@ -264,11 +268,13 @@ const MapControl: React.FC<MapControlProps> = ({
                         </div>
                       </div>
                       <div className="flex flex-col items-end">
-                        <Badge className="bg-white/20 text-white border-none text-xs mb-1">
+                        <Badge className="bg-white/30 text-white border-none text-xs mb-1 backdrop-blur-sm">
                           {company.member_count}
                         </Badge>
                         {!company.coordinates && (
-                          <span className="text-yellow-400 text-xs">No coords</span>
+                          <span className="text-amber-300 text-xs font-medium bg-amber-500/20 px-2 py-1 rounded">
+                            No location
+                          </span>
                         )}
                       </div>
                     </div>
@@ -287,7 +293,7 @@ const MapControl: React.FC<MapControlProps> = ({
                 setSelectedIndustry(null);
                 onIndustryFilter(null);
               }}
-              className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20"
+              className="w-full bg-white/15 border-white/30 text-white hover:bg-white/25 transition-all duration-200 backdrop-blur-sm"
             >
               Clear Industry Filter
             </Button>

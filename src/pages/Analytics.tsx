@@ -144,10 +144,10 @@ export default function Analytics() {
         </div>
         <div className="flex items-center gap-3">
           <Tabs value={selectedTimeframe} onValueChange={setSelectedTimeframe}>
-            <TabsList className="bg-white/10">
-              <TabsTrigger value="monthly">Monthly</TabsTrigger>
-              <TabsTrigger value="quarterly">Quarterly</TabsTrigger>
-              <TabsTrigger value="yearly">Yearly</TabsTrigger>
+            <TabsList className="bg-white/10 backdrop-blur-sm border border-white/20">
+              <TabsTrigger value="monthly" className="data-[state=active]:bg-white/20 data-[state=active]:text-white">Monthly</TabsTrigger>
+              <TabsTrigger value="quarterly" className="data-[state=active]:bg-white/20 data-[state=active]:text-white">Quarterly</TabsTrigger>
+              <TabsTrigger value="yearly" className="data-[state=active]:bg-white/20 data-[state=active]:text-white">Yearly</TabsTrigger>
             </TabsList>
           </Tabs>
           <Button variant="outline" className="flex items-center gap-2">
@@ -226,16 +226,16 @@ export default function Analytics() {
 
           {/* Charts and Analytics */}
           <Tabs defaultValue="industries" className="space-y-6">
-            <TabsList className="bg-white/10">
-              <TabsTrigger value="industries" className="flex items-center gap-2">
+            <TabsList className="bg-white/10 backdrop-blur-sm border border-white/20">
+              <TabsTrigger value="industries" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                 <PieChart className="h-4 w-4" />
                 Industries
               </TabsTrigger>
-              <TabsTrigger value="geography" className="flex items-center gap-2">
+              <TabsTrigger value="geography" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                 <BarChart3 className="h-4 w-4" />
                 Geography
               </TabsTrigger>
-              <TabsTrigger value="trends" className="flex items-center gap-2">
+              <TabsTrigger value="trends" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                 <LineChart className="h-4 w-4" />
                 Trends
               </TabsTrigger>
