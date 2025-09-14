@@ -179,7 +179,7 @@ export default function Industries() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -191,7 +191,7 @@ export default function Industries() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -203,7 +203,7 @@ export default function Industries() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -237,7 +237,7 @@ export default function Industries() {
           filteredIndustries.map((industry) => (
             <Card 
               key={industry.id} 
-              className="glass-card border-white/20 backdrop-blur-xl hover:scale-105 transition-all duration-200 group"
+              className="glass-card border-white/20 backdrop-blur-xl bg-transparent hover:scale-105 transition-all duration-200 group"
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
@@ -320,7 +320,7 @@ export default function Industries() {
       </div>
 
       {filteredIndustries.length === 0 && !loading && (
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-8 text-center">
             <p className="text-muted-foreground">No industries found matching your search.</p>
           </CardContent>

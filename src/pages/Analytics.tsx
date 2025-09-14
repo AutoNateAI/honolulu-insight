@@ -161,7 +161,7 @@ export default function Analytics() {
         <>
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -179,7 +179,7 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -197,7 +197,7 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -210,7 +210,7 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/20 backdrop-blur-xl">
+        <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -244,7 +244,7 @@ export default function Analytics() {
             <TabsContent value="industries" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Industry Distribution */}
-                <Card className="glass-card border-white/20 backdrop-blur-xl">
+                <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <PieChart className="h-5 w-5" />
@@ -291,7 +291,7 @@ export default function Analytics() {
                 </Card>
 
                 {/* Growth Rates */}
-                <Card className="glass-card border-white/20 backdrop-blur-xl">
+                <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
@@ -328,7 +328,7 @@ export default function Analytics() {
             </TabsContent>
 
             <TabsContent value="geography" className="space-y-6">
-              <Card className="glass-card border-white/20 backdrop-blur-xl">
+              <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BarChart3 className="h-5 w-5" />
@@ -360,7 +360,7 @@ export default function Analytics() {
             </TabsContent>
 
             <TabsContent value="trends" className="space-y-6">
-              <Card className="glass-card border-white/20 backdrop-blur-xl">
+              <Card className="glass-card border-white/20 backdrop-blur-xl bg-transparent">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <LineChart className="h-5 w-5" />
